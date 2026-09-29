@@ -135,7 +135,6 @@ export default function Background() {
         <spotLight position={[10, 20, 10]} angle={0.15} penumbra={1} intensity={2} color="#ffffff" />
         <spotLight position={[-10, -10, -10]} angle={0.3} penumbra={1} intensity={1} color="#ffffff" />
         
-        <Rain />
         <Shards />
         
         {/* Adds reflections for the glass shards */}
