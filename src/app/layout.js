@@ -16,6 +16,13 @@ const playfairDisplay = Playfair_Display({
 export const metadata = {
   title: "Strike | Vintage To-Do",
   description: "A productivity app for managing tasks with an interactive 3D aesthetic.",
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Strike',
+  },
+  themeColor: '#121212',
 };
 
 export default function RootLayout({ children }) {

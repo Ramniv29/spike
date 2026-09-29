@@ -8,6 +8,7 @@ import Background from '@/components/3d/Background'
 import Link from 'next/link'
 import { CalendarView } from '@/components/tasks/CalendarView'
 import { KeyboardShortcuts } from '@/components/KeyboardShortcuts'
+import { StatsModal } from '@/components/tasks/StatsModal'
 
 export default async function DashboardPage({ searchParams }) {
   const supabase = await createClient()
@@ -33,12 +34,15 @@ export default async function DashboardPage({ searchParams }) {
               {user.email}
             </p>
           </div>
-          <form action={signOut}>
-            <button className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors cursor-pointer bg-neutral-900/50 px-2 sm:px-4 py-2 rounded-lg border border-neutral-800 hover:border-neutral-500">
-              <LogOut size={14} />
-              <span className="font-sans text-xs sm:text-sm tracking-wide hidden sm:inline">Sign Out</span>
-            </button>
-          </form>
+          <div className="flex gap-2">
+            <StatsModal tasks={tasks} />
+            <form action={signOut}>
+              <button className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors cursor-pointer bg-neutral-900/50 px-2 sm:px-4 py-2 rounded-lg border border-neutral-800 hover:border-neutral-500">
+                <LogOut size={14} />
+                <span className="font-sans text-xs sm:text-sm tracking-wide hidden sm:inline">Sign Out</span>
+              </button>
+            </form>
+          </div>
         </header>
 
         <main className="flex-1">
