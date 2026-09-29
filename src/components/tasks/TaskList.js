@@ -47,28 +47,28 @@ export function TaskList({ initialTasks }) {
         {!isSelectionMode ? (
           <button 
             onClick={() => setIsSelectionMode(true)}
-            className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors text-sm font-sans uppercase tracking-widest font-bold"
+            className="flex items-center gap-1 sm:gap-2 text-neutral-400 hover:text-white transition-colors text-xs sm:text-sm font-sans uppercase tracking-widest font-bold"
           >
-            <CheckSquare size={16} /> Select Tasks
+            <CheckSquare size={14} /> Select
           </button>
         ) : (
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-sans text-neutral-400 font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-xs sm:text-sm font-sans text-neutral-400 font-bold uppercase tracking-widest">
               {selectedTaskIds.size} Selected
             </span>
             <button 
               onClick={handleDeleteSelected}
               disabled={selectedTaskIds.size === 0 || isDeleting}
-              className={`flex items-center gap-2 text-sm font-sans uppercase tracking-widest font-bold transition-colors ${selectedTaskIds.size > 0 ? 'text-red-500 hover:text-red-400 cursor-pointer' : 'text-neutral-600 cursor-not-allowed'}`}
+              className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-sans uppercase tracking-widest font-bold transition-colors ${selectedTaskIds.size > 0 ? 'text-red-500 hover:text-red-400 cursor-pointer' : 'text-neutral-600 cursor-not-allowed'}`}
             >
-              <Trash2 size={16} /> Delete
+              <Trash2 size={14} /> Delete
             </button>
             <button 
               onClick={() => {
                 setIsSelectionMode(false)
                 setSelectedTaskIds(new Set())
               }}
-              className="text-neutral-400 hover:text-white transition-colors text-sm font-sans uppercase tracking-widest font-bold"
+              className="text-neutral-400 hover:text-white transition-colors text-xs sm:text-sm font-sans uppercase tracking-widest font-bold"
             >
               Cancel
             </button>

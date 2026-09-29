@@ -6,50 +6,28 @@ import { ChevronLeft, ChevronRight, Clock, Plus, Calendar } from 'lucide-react'
 export function CalendarView({ tasks }) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
-  // Get days in month
-  const getDaysInMonth = (year, month) => {
-    return new Date(year, month + 1, 0).getDate()
-  }
-
-  // Get starting day of month (0 = Sunday, 1 = Monday, etc.)
-  const getFirstDayOfMonth = (year, month) => {
-    return new Date(year, month, 1).getDay()
-  }
+  const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate()
+  const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay()
 
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
-  
   const daysInMonth = getDaysInMonth(year, month)
   const firstDay = getFirstDayOfMonth(year, month)
-  
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-  const nextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1))
-  }
-
-  const prevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1))
-  }
+  const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1))
+  const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1))
 
   const openAddTaskForDate = (day) => {
-    // Format to YYYY-MM-DDT09:00
     const d = new Date(year, month, day, 9, 0)
-    
-    // Create local timezone aware ISO string for datetime-local input
-    const tzOffset = d.getTimezoneOffset() * 60000;
-    const localISOTime = (new Date(d - tzOffset)).toISOString().slice(0, 16);
-
+    const tzOffset = d.getTimezoneOffset() * 60000
+    const localISOTime = (new Date(d - tzOffset)).toISOString().slice(0, 16)
     window.dispatchEvent(new CustomEvent('openAddTask', { detail: { date: localISOTime } }))
   }
 
-  // Generate blank cells for days before the 1st
   const blanks = Array(firstDay).fill(null)
-  
-  // Generate actual days
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1)
 
-  // Map tasks to days
   const tasksByDay = {}
   tasks.forEach(task => {
     if (task.deadline && !task.is_completed) {
@@ -63,35 +41,38 @@ export function CalendarView({ tasks }) {
   })
 
   return (
-    <div className="bg-neutral-100/95 backdrop-blur-md border-4 border-white/50 rounded p-6 shadow-[10px_10px_0_rgba(255,255,255,0.2)]">
+    <div className="bg-neutral-100/95 backdrop-blur-md border-4 border-white/50 rounded p-3 sm:p-6 shadow-[4px_4px_0_rgba(255,255,255,0.2)] sm:shadow-[10px_10px_0_rgba(255,255,255,0.2)]">
       
       {/* Calendar Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="font-sans font-black text-3xl uppercase tracking-widest text-black">
+      <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <h2 className="font-sans font-black text-xl sm:text-3xl uppercase tracking-widest text-black">
           {monthNames[month]} {year}
         </h2>
         <div className="flex gap-2">
-          <button onClick={prevMonth} className="p-2 bg-white border-2 border-black hover:bg-neutral-200 transition-colors shadow-[2px_2px_0_rgba(0,0,0,1)] text-black">
-            <ChevronLeft size={20} strokeWidth={3} />
+          <button onClick={prevMonth} className="p-1.5 sm:p-2 bg-white border-2 border-black hover:bg-neutral-200 transition-colors shadow-[2px_2px_0_rgba(0,0,0,1)] text-black">
+            <ChevronLeft size={16} strokeWidth={3} className="sm:hidden" />
+            <ChevronLeft size={20} strokeWidth={3} className="hidden sm:block" />
           </button>
-          <button onClick={nextMonth} className="p-2 bg-white border-2 border-black hover:bg-neutral-200 transition-colors shadow-[2px_2px_0_rgba(0,0,0,1)] text-black">
-            <ChevronRight size={20} strokeWidth={3} />
+          <button onClick={nextMonth} className="p-1.5 sm:p-2 bg-white border-2 border-black hover:bg-neutral-200 transition-colors shadow-[2px_2px_0_rgba(0,0,0,1)] text-black">
+            <ChevronRight size={16} strokeWidth={3} className="sm:hidden" />
+            <ChevronRight size={20} strokeWidth={3} className="hidden sm:block" />
           </button>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-2">
-        {/* Day Headers */}
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center font-sans font-bold uppercase tracking-wider text-xs text-neutral-500 py-2 border-b-2 border-black/20">
-            {day}
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
+        {/* Day Headers - short on mobile */}
+        {[['S','Sun'], ['M','Mon'], ['T','Tue'], ['W','Wed'], ['T','Thu'], ['F','Fri'], ['S','Sat']].map(([short, full], i) => (
+          <div key={full} className="text-center font-sans font-bold uppercase tracking-wider text-[9px] sm:text-xs text-neutral-500 py-1 sm:py-2 border-b-2 border-black/20">
+            <span className="sm:hidden">{short}</span>
+            <span className="hidden sm:inline">{full}</span>
           </div>
         ))}
 
         {/* Blank Cells */}
         {blanks.map((_, i) => (
-          <div key={`blank-${i}`} className="min-h-[100px] p-2 bg-neutral-200/50 border-2 border-transparent"></div>
+          <div key={`blank-${i}`} className="min-h-[44px] sm:min-h-[100px] p-1 sm:p-2 bg-neutral-200/50 border-2 border-transparent"></div>
         ))}
 
         {/* Day Cells */}
@@ -100,37 +81,46 @@ export function CalendarView({ tasks }) {
           const isToday = new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year
 
           return (
-            <div 
-              key={day} 
+            <div
+              key={day}
               onClick={() => openAddTaskForDate(day)}
-              className={`min-h-[100px] p-2 border-2 transition-all cursor-pointer group hover:-translate-y-1 ${isToday ? 'border-green-500 bg-green-50/90 shadow-[4px_4px_0_rgba(34,197,94,0.4)] hover:shadow-[6px_6px_0_rgba(34,197,94,0.6)] hover:bg-green-100' : 'border-neutral-300 bg-neutral-50 hover:border-black hover:bg-white hover:shadow-[4px_4px_0_rgba(0,0,0,1)]'}`}
+              className={`min-h-[44px] sm:min-h-[100px] p-1 sm:p-2 border-2 transition-all cursor-pointer group hover:-translate-y-0.5 sm:hover:-translate-y-1 ${isToday ? 'border-green-500 bg-green-50/90 shadow-[2px_2px_0_rgba(34,197,94,0.4)] sm:shadow-[4px_4px_0_rgba(34,197,94,0.4)]' : 'border-neutral-300 bg-neutral-50 hover:border-black hover:bg-white hover:shadow-[2px_2px_0_rgba(0,0,0,1)] sm:hover:shadow-[4px_4px_0_rgba(0,0,0,1)]'}`}
             >
               <div className="flex justify-between items-start">
-                <span className={`font-sans font-black text-lg ${isToday ? 'text-green-700' : 'text-neutral-700'}`}>
+                <span className={`font-sans font-black text-xs sm:text-lg ${isToday ? 'text-green-700' : 'text-neutral-700'}`}>
                   {day}
                 </span>
-                <button className="opacity-0 group-hover:opacity-100 text-neutral-400 hover:text-black transition-opacity">
+                <button className="hidden sm:block opacity-0 group-hover:opacity-100 text-neutral-400 hover:text-black transition-opacity">
                   <Plus size={16} strokeWidth={3} />
                 </button>
               </div>
 
-              <div className="mt-2 flex flex-col gap-1">
-                {dayTasks.map(task => {
-                  const isEvent = task.color_tag === 'event'
-                  const time = new Date(task.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                  const color = task.color_tag === 'urgent' ? 'bg-red-600' : task.color_tag === 'pending' ? 'bg-blue-600' : isEvent ? 'bg-white border border-black text-black' : 'bg-black text-white'
-                  
-                  return (
-                    <div 
-                      key={task.id} 
-                      className={`text-[10px] sm:text-xs font-sans font-bold uppercase tracking-wider px-1.5 py-1 flex items-center gap-1 truncate ${color}`}
-                      title={`${task.title} at ${time}`}
-                    >
-                      {isEvent ? <Calendar size={10} className="shrink-0" /> : <Clock size={10} className="shrink-0" />}
-                      <span className="truncate">{task.title}</span>
-                    </div>
-                  )
-                })}
+              {/* Only show tasks on sm+ screens, show dot indicators on mobile */}
+              <div className="mt-1 sm:mt-2 flex flex-col gap-0.5 sm:gap-1">
+                {dayTasks.length > 0 && (
+                  <div className="sm:hidden flex gap-0.5 flex-wrap">
+                    {dayTasks.slice(0, 3).map(task => (
+                      <div key={task.id} className={`w-1.5 h-1.5 rounded-full ${task.color_tag === 'urgent' ? 'bg-red-600' : task.color_tag === 'event' ? 'bg-black' : 'bg-blue-600'}`} />
+                    ))}
+                  </div>
+                )}
+                <div className="hidden sm:flex flex-col gap-1">
+                  {dayTasks.map(task => {
+                    const isEvent = task.color_tag === 'event'
+                    const time = new Date(task.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    const color = task.color_tag === 'urgent' ? 'bg-red-600 text-white' : task.color_tag === 'pending' ? 'bg-blue-600 text-white' : isEvent ? 'bg-white border border-black text-black' : 'bg-black text-white'
+                    return (
+                      <div
+                        key={task.id}
+                        className={`text-[10px] sm:text-xs font-sans font-bold uppercase tracking-wider px-1.5 py-1 flex items-center gap-1 truncate ${color}`}
+                        title={`${task.title} at ${time}`}
+                      >
+                        {isEvent ? <Calendar size={10} className="shrink-0" /> : <Clock size={10} className="shrink-0" />}
+                        <span className="truncate">{task.title}</span>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           )
