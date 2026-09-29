@@ -25,7 +25,6 @@ export default function RootLayout({ children }) {
       className={`${greatVibes.variable} ${playfairDisplay.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col font-sans bg-[#121212] text-[#f4f4f5] selection:bg-[#3f3f46]">
-        <Background />
         <div className="z-10 flex flex-col min-h-screen">
           {children}
         </div>

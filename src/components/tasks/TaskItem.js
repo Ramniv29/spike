@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { toggleTask, addSubtask, toggleSubtask } from '@/app/dashboard/actions'
-import { ChevronDown, ChevronRight, Plus, Check } from 'lucide-react'
+import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask } from '@/app/dashboard/actions'
+import { ChevronDown, ChevronRight, Plus, Check, Trash2 } from 'lucide-react'
 
 const COLOR_MAP = {
   urgent: 'border-red-600 text-red-600',
@@ -18,6 +18,12 @@ export function TaskItem({ task }) {
     await toggleTask(task.id, task.is_completed)
   }
 
+  const handleDeleteTask = async () => {
+    if (confirm('Are you sure you want to delete this task?')) {
+      await deleteTask(task.id)
+    }
+  }
+
   const handleAddSubtask = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
@@ -28,6 +34,12 @@ export function TaskItem({ task }) {
 
   const handleToggleSubtask = async (subtask) => {
     await toggleSubtask(subtask.id, subtask.is_completed)
+  }
+
+  const handleDeleteSubtask = async (subtask) => {
+    if (confirm('Are you sure you want to delete this subtask?')) {
+      await deleteSubtask(subtask.id)
+    }
   }
 
   const colorClass = COLOR_MAP[task.color_tag] || COLOR_MAP.default
@@ -57,9 +69,18 @@ export function TaskItem({ task }) {
           )}
         </div>
 
-        <button className="text-black hover:text-neutral-600 cursor-pointer p-1">
-          {expanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
-        </button>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleDeleteTask() }}
+            className="text-neutral-400 hover:text-red-600 transition-colors cursor-pointer p-2 rounded hover:bg-red-50"
+            title="Delete task"
+          >
+            <Trash2 size={18} />
+          </button>
+          <button className="text-black hover:text-neutral-600 cursor-pointer p-2">
+            {expanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
+          </button>
+        </div>
       </div>
 
       {expanded && (
@@ -72,7 +93,7 @@ export function TaskItem({ task }) {
 
           <div className="flex flex-col gap-3 mt-3">
             {task.subtasks?.map(subtask => (
-              <div key={subtask.id} className={`flex items-center gap-3 text-sm font-sans font-medium ${subtask.is_completed ? 'opacity-60' : ''}`}>
+              <div key={subtask.id} className={`group flex items-center gap-3 text-sm font-sans font-medium ${subtask.is_completed ? 'opacity-60' : ''}`}>
                 <button 
                   onClick={() => handleToggleSubtask(subtask)}
                   className={`w-5 h-5 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${subtask.is_completed ? 'bg-black border-black text-white' : 'border-black'}`}
@@ -85,6 +106,14 @@ export function TaskItem({ task }) {
                 {subtask.color_tag && (
                   <div className="w-3 h-3 rounded-full border border-black/20" style={{ backgroundColor: subtask.color_tag }}></div>
                 )}
+                <div className="flex-1"></div>
+                <button 
+                  onClick={() => handleDeleteSubtask(subtask)}
+                  className="text-neutral-400 hover:text-red-600 transition-colors cursor-pointer p-1 rounded hover:bg-red-50 opacity-0 group-hover:opacity-100"
+                  title="Delete subtask"
+                >
+                  <Trash2 size={14} />
+                </button>
               </div>
             ))}
 

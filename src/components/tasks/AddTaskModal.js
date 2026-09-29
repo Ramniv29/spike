@@ -1,11 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { addTask } from '@/app/dashboard/actions'
 import { Plus, X } from 'lucide-react'
 
 export function AddTaskModal() {
   const [isOpen, setIsOpen] = useState(false)
+  const [initialDate, setInitialDate] = useState('')
+
+  useEffect(() => {
+    const handleOpen = (e) => {
+      setIsOpen(true)
+      if (e.detail?.date) {
+        setInitialDate(e.detail.date)
+      } else {
+        setInitialDate('')
+      }
+    }
+    window.addEventListener('openAddTask', handleOpen)
+    return () => window.removeEventListener('openAddTask', handleOpen)
+  }, [])
   
   if (!isOpen) {
     return (
@@ -68,6 +82,7 @@ export function AddTaskModal() {
               <input 
                 type="datetime-local"
                 name="deadline"
+                defaultValue={initialDate}
                 className="bg-white border-2 border-neutral-300 rounded p-2 outline-none focus:border-black font-sans text-sm font-medium text-black transition-colors [color-scheme:light]"
               />
             </div>

@@ -99,6 +99,32 @@ export async function toggleSubtask(id, currentStatus) {
   return { success: true }
 }
 
+export async function deleteTask(id) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('id', id)
+    
+  if (error) return { error: error.message }
+  
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
+export async function deleteSubtask(id) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('subtasks')
+    .delete()
+    .eq('id', id)
+    
+  if (error) return { error: error.message }
+  
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
