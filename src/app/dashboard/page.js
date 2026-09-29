@@ -3,10 +3,11 @@ import { TaskList } from '@/components/tasks/TaskList'
 import { AddTaskModal } from '@/components/tasks/AddTaskModal'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { LogOut, LayoutList, Calendar as CalendarIcon } from 'lucide-react'
+import { LogOut, LayoutList, Calendar as CalendarIcon, FileText } from 'lucide-react'
 import Background from '@/components/3d/Background'
 import Link from 'next/link'
 import { CalendarView } from '@/components/tasks/CalendarView'
+import { NotesView } from '@/components/tasks/NotesView'
 import { KeyboardShortcuts } from '@/components/KeyboardShortcuts'
 import { StatsModal } from '@/components/tasks/StatsModal'
 
@@ -60,10 +61,18 @@ export default async function DashboardPage({ searchParams }) {
             >
               <CalendarIcon size={14} /> Calendar
             </Link>
+            <Link 
+              href="/dashboard?view=notes"
+              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 font-sans font-bold uppercase tracking-widest text-[10px] sm:text-xs transition-colors ${view === 'notes' ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)]' : 'text-neutral-400 hover:text-white'}`}
+            >
+              <FileText size={14} /> Notes
+            </Link>
           </div>
 
           {view === 'calendar' ? (
             <CalendarView tasks={tasks} />
+          ) : view === 'notes' ? (
+            <NotesView tasks={tasks} />
           ) : (
             <TaskList initialTasks={tasks} />
           )}

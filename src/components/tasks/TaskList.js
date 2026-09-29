@@ -97,6 +97,8 @@ export function TaskList({ initialTasks }) {
   }
 
   const filteredTasks = orderedTasks.filter(task => {
+    if (task.category === '_note') return false
+
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()))
     

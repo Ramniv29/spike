@@ -30,6 +30,8 @@ export function CalendarView({ tasks }) {
 
   const tasksByDay = {}
   tasks.forEach(task => {
+    if (task.category === '_note') return;
+    
     if (task.deadline && !task.is_completed) {
       const taskDate = new Date(task.deadline)
       if (taskDate.getFullYear() === year && taskDate.getMonth() === month) {
