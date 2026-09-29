@@ -46,7 +46,7 @@ export default async function DashboardPage({ searchParams }) {
             href="/dashboard"
             className={`flex items-center gap-2 px-4 py-2 font-sans font-bold uppercase tracking-widest text-xs transition-colors ${view === 'list' ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)]' : 'text-neutral-400 hover:text-white'}`}
           >
-            <LayoutList size={16} /> Board
+            <LayoutList size={16} /> Strike
           </Link>
           <Link 
             href="/dashboard?view=calendar"
