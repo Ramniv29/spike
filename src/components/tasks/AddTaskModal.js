@@ -11,79 +11,79 @@ export function AddTaskModal() {
     return (
       <button 
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-neutral-200 text-neutral-900 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.2)] flex items-center justify-center hover:bg-white hover:scale-105 transition-all duration-300 z-50 cursor-pointer"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-white text-black border-[3px] border-black rounded-full shadow-[6px_6px_0_rgba(255,255,255,0.4)] flex items-center justify-center hover:bg-neutral-200 hover:-translate-y-1 transition-all duration-300 z-50 cursor-pointer"
       >
-        <Plus size={28} />
+        <Plus size={32} strokeWidth={3} />
       </button>
     )
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-[#121212] border border-neutral-800 rounded-xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        <div className="flex justify-between items-center p-4 border-b border-neutral-800">
-          <h2 className="font-sans font-medium text-lg">New Strike</h2>
-          <button onClick={() => setIsOpen(false)} className="text-neutral-500 hover:text-white transition-colors cursor-pointer">
-            <X size={20} />
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-neutral-100 border-4 border-white w-full max-w-md shadow-[10px_10px_0_rgba(255,255,255,0.2)] rounded overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center p-5 border-b-2 border-black/10 bg-white/50">
+          <h2 className="font-sans font-black text-xl uppercase tracking-widest text-black">New Strike</h2>
+          <button onClick={() => setIsOpen(false)} className="text-black hover:text-neutral-500 transition-colors cursor-pointer p-1">
+            <X size={24} strokeWidth={3} />
           </button>
         </div>
         
         <form action={async (formData) => {
           await addTask(formData)
           setIsOpen(false)
-        }} className="p-4 flex flex-col gap-4">
+        }} className="p-6 flex flex-col gap-6">
           
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-neutral-400 font-sans">Title</label>
+            <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Title</label>
             <input 
               name="title"
               required
               placeholder="What needs to be done?"
-              className="bg-transparent border-b border-neutral-700 py-2 outline-none focus:border-white font-sans text-lg transition-colors"
+              className="bg-transparent border-b-2 border-neutral-400 py-2 outline-none focus:border-black font-sans font-bold text-xl text-black transition-colors placeholder:text-neutral-400"
             />
           </div>
           
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-neutral-400 font-sans">Description (Optional)</label>
+            <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Description (Optional)</label>
             <textarea 
               name="description"
               placeholder="Add more details..."
               rows={3}
-              className="bg-neutral-900 border border-neutral-800 rounded-md p-3 outline-none focus:border-neutral-600 font-sans text-sm resize-none transition-colors"
+              className="bg-white border-2 border-neutral-300 rounded p-3 outline-none focus:border-black font-sans text-sm font-medium text-black resize-none transition-colors placeholder:text-neutral-400"
             />
           </div>
           
           <div className="flex gap-4">
             <div className="flex flex-col gap-1 flex-1">
-              <label className="text-xs text-neutral-400 font-sans">Category</label>
+              <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Category</label>
               <input 
                 name="category"
                 placeholder="e.g. Work, Personal"
-                className="bg-neutral-900 border border-neutral-800 rounded-md p-2 outline-none focus:border-neutral-600 font-sans text-sm transition-colors"
+                className="bg-white border-2 border-neutral-300 rounded p-2 outline-none focus:border-black font-sans text-sm font-medium text-black transition-colors placeholder:text-neutral-400"
               />
             </div>
             
             <div className="flex flex-col gap-1 flex-1">
-              <label className="text-xs text-neutral-400 font-sans">Deadline</label>
+              <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Deadline</label>
               <input 
                 type="datetime-local"
                 name="deadline"
-                className="bg-neutral-900 border border-neutral-800 rounded-md p-2 outline-none focus:border-neutral-600 font-sans text-sm transition-colors text-neutral-300 [color-scheme:dark]"
+                className="bg-white border-2 border-neutral-300 rounded p-2 outline-none focus:border-black font-sans text-sm font-medium text-black transition-colors [color-scheme:light]"
               />
             </div>
           </div>
           
-          <div className="mt-4 flex justify-end gap-3">
+          <div className="mt-4 flex justify-end gap-4 items-center">
             <button 
               type="button" 
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2 text-sm font-sans text-neutral-400 hover:text-white transition-colors cursor-pointer"
+              className="text-sm font-sans font-bold uppercase tracking-widest text-neutral-600 hover:text-black transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button 
               type="submit"
-              className="px-6 py-2 text-sm font-sans bg-neutral-200 text-neutral-900 rounded-md hover:bg-white transition-colors shadow-lg cursor-pointer"
+              className="px-8 py-3 text-sm font-sans font-bold uppercase tracking-widest bg-black text-white rounded border-2 border-black hover:bg-neutral-800 transition-colors shadow-[4px_4px_0_rgba(0,0,0,0.3)] cursor-pointer"
             >
               Create
             </button>
