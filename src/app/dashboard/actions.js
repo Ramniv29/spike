@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { GoogleGenAI } from '@google/genai'
 
 export async function getTasks() {
   const supabase = await createClient()
@@ -143,4 +144,48 @@ export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   redirect('/login')
+}
+
+export async function generateSubtasksAI(taskId, taskTitle) {
+  if (!process.env.GEMINI_API_KEY) {
+    return { error: 'GEMINI_API_KEY is missing. Please add it to your environment variables.' }
+  }
+
+  try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+    const prompt = `You are an AI assistant for a task manager called Strike. 
+The user has a task: "${taskTitle}". 
+Return exactly 3-5 actionable subtasks to complete it.
+Output ONLY a raw JSON array of strings. Do not include markdown formatting or backticks.
+Example: ["Subtask 1", "Subtask 2", "Subtask 3"]`
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    })
+
+    let text = response.text.trim()
+    // Fallback if the model includes markdown backticks anyway
+    if (text.startsWith('```')) {
+      text = text.replace(/```json/g, '').replace(/```/g, '').trim()
+    }
+    
+    const subtasksList = JSON.parse(text)
+    
+    const supabase = await createClient()
+    const inserts = subtasksList.map(title => ({
+      task_id: taskId,
+      title: title,
+      color_tag: 'default'
+    }))
+
+    const { error } = await supabase.from('subtasks').insert(inserts)
+    if (error) return { error: error.message }
+    
+    revalidatePath('/dashboard')
+    return { success: true, count: inserts.length }
+  } catch (error) {
+    console.error('AI Error:', error)
+    return { error: 'Failed to generate subtasks with AI.' }
+  }
 }

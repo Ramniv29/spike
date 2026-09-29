@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useOptimistic, useTransition } from 'react'
-import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask } from '@/app/dashboard/actions'
-import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target } from 'lucide-react'
+import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask, generateSubtasksAI } from '@/app/dashboard/actions'
+import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target, Sparkles, Loader2 } from 'lucide-react'
 import { FocusMode } from './FocusMode'
 
 const COLOR_MAP = {
@@ -15,6 +15,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
   const [expanded, setExpanded] = useState(false)
   const [addingSubtask, setAddingSubtask] = useState(false)
   const [isFocusing, setIsFocusing] = useState(false)
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const [optimisticTask, setOptimisticTask] = useOptimistic(
@@ -116,6 +117,13 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
         <div className="flex items-center gap-1">
           {!isSelectionMode && (
             <>
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleGenerateAI() }}
+                className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200 hidden sm:block"
+                title="AI Task Breakdown"
+              >
+                {isGeneratingAI ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
+              </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsFocusing(true) }}
                 className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200 hidden sm:block"
