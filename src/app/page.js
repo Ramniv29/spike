@@ -1,5 +1,7 @@
 'use client'
 
+import { Mail } from 'lucide-react'
+
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Background from '@/components/3d/Background'
@@ -257,6 +259,31 @@ export default function Home() {
               <Link href="/signup" className="inline-flex items-center gap-3 px-10 py-5 bg-white text-black font-sans font-black tracking-widest uppercase text-sm border-2 border-white hover:bg-neutral-200 transition-all shadow-[8px_8px_0px_rgba(255,255,255,0.15)] hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1">
                 Start For Free <ChevronRight size={18} />
               </Link>
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* ─── CONTACT ─── */}
+        <section className="py-20 sm:py-28 px-4 sm:px-8 bg-neutral-950/60 backdrop-blur-sm">
+          <div className="max-w-3xl mx-auto text-center">
+            <AnimatedSection>
+              <div className="inline-block bg-white/10 border border-white/20 text-white px-4 py-1.5 font-sans font-black uppercase text-xs tracking-[0.3em] mb-6">
+                ◈ Contact
+              </div>
+              <h2 className="font-sans font-black text-4xl sm:text-5xl uppercase text-white leading-none mb-4 tracking-tight">
+                Got a Question?<br/>
+                <span className="text-transparent [-webkit-text-stroke:2px_white]">Drop Us a Line.</span>
+              </h2>
+              <p className="text-neutral-400 font-sans text-sm sm:text-base mb-10 max-w-md mx-auto">
+                Bug reports, feedback, or just want to say hi — we're reachable. Hit us up and we'll get back to you.
+              </p>
+              <a
+                href="mailto:ramniv2529@gmail.com"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-neutral-900 text-white font-sans font-bold uppercase tracking-widest text-sm border-2 border-neutral-700 hover:border-white hover:bg-white hover:text-black transition-all duration-300 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1"
+              >
+                <Mail size={18} className="group-hover:scale-110 transition-transform" />
+                ramniv2529@gmail.com
+              </a>
             </AnimatedSection>
           </div>
         </section>
