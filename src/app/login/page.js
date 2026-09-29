@@ -1,6 +1,7 @@
 import { login } from './actions'
 import Link from 'next/link'
 import Background from '@/components/3d/Background'
+import SubmitButton from '@/components/SubmitButton'
 
 export default async function LoginPage({ searchParams }) {
   const params = await searchParams;
@@ -26,7 +27,7 @@ export default async function LoginPage({ searchParams }) {
             </div>
           )}
           
-          <form className="flex-1 flex flex-col w-full justify-center gap-5 text-foreground relative z-10">
+          <form action={login} className="flex-1 flex flex-col w-full justify-center gap-5 text-foreground relative z-10">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs tracking-wider uppercase text-neutral-400 font-sans" htmlFor="email">
                 Email
@@ -52,12 +53,9 @@ export default async function LoginPage({ searchParams }) {
               />
             </div>
             
-            <button
-              formAction={login}
-              className="bg-neutral-200 text-neutral-900 font-sans rounded-lg px-4 py-3 mt-4 hover:bg-white transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] cursor-pointer font-medium tracking-wide"
-            >
+            <SubmitButton pendingText="Signing In...">
               Sign In
-            </button>
+            </SubmitButton>
             
             <div className="text-center mt-6 space-y-3">
               <p className="text-sm text-neutral-400">
