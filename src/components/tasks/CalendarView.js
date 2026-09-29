@@ -103,10 +103,10 @@ export function CalendarView({ tasks }) {
             <div 
               key={day} 
               onClick={() => openAddTaskForDate(day)}
-              className={`min-h-[100px] p-2 border-2 transition-all cursor-pointer group hover:bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] ${isToday ? 'border-black bg-white' : 'border-neutral-300 bg-neutral-50 hover:border-black'}`}
+              className={`min-h-[100px] p-2 border-2 transition-all cursor-pointer group hover:-translate-y-1 ${isToday ? 'border-green-500 bg-green-50/90 shadow-[4px_4px_0_rgba(34,197,94,0.4)] hover:shadow-[6px_6px_0_rgba(34,197,94,0.6)] hover:bg-green-100' : 'border-neutral-300 bg-neutral-50 hover:border-black hover:bg-white hover:shadow-[4px_4px_0_rgba(0,0,0,1)]'}`}
             >
               <div className="flex justify-between items-start">
-                <span className={`font-sans font-black text-lg ${isToday ? 'text-black' : 'text-neutral-700'}`}>
+                <span className={`font-sans font-black text-lg ${isToday ? 'text-green-700' : 'text-neutral-700'}`}>
                   {day}
                 </span>
                 <button className="opacity-0 group-hover:opacity-100 text-neutral-400 hover:text-black transition-opacity">
