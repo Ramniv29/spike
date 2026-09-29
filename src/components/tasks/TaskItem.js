@@ -112,13 +112,13 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
             type="text" 
             name="title" 
             defaultValue={task.title}
-            className="w-full bg-transparent border-b-2 border-black text-xl font-bold font-sans py-1 outline-none focus:border-blue-600"
+            className="w-full bg-transparent border-b-2 border-black text-black text-xl font-bold font-sans py-1 outline-none focus:border-blue-600"
             required
           />
           <textarea 
             name="description" 
             defaultValue={task.description}
-            className="w-full bg-black/5 border-2 border-black/10 rounded p-2 text-sm font-sans min-h-[80px] outline-none focus:border-black"
+            className="w-full bg-black/5 border-2 border-black/10 rounded p-2 text-black text-sm font-sans min-h-[80px] outline-none focus:border-black placeholder-neutral-500"
             placeholder="Description..."
           />
           <div className="flex flex-wrap gap-4 items-center">
@@ -126,16 +126,16 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
               type="date" 
               name="deadline" 
               defaultValue={task.deadline ? task.deadline.split('T')[0] : ''}
-              className="bg-transparent border-b-2 border-black font-sans font-medium text-sm p-1 outline-none"
+              className="bg-transparent border-b-2 border-black text-black font-sans font-medium text-sm p-1 outline-none"
             />
             <input 
               type="text" 
               name="category" 
               defaultValue={task.category}
               placeholder="Category"
-              className="bg-transparent border-b-2 border-black font-sans font-medium text-sm p-1 outline-none"
+              className="bg-transparent border-b-2 border-black text-black font-sans font-medium text-sm p-1 outline-none placeholder-neutral-500"
             />
-            <select name="color_tag" defaultValue={task.color_tag || 'default'} className="bg-transparent border-b-2 border-black font-sans font-medium text-sm p-1 outline-none">
+            <select name="color_tag" defaultValue={task.color_tag || 'default'} className="bg-transparent border-b-2 border-black text-black font-sans font-medium text-sm p-1 outline-none">
               <option value="default">Default</option>
               <option value="pending">Pending (Blue)</option>
               <option value="urgent">Urgent (Red)</option>
