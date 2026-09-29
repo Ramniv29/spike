@@ -15,9 +15,13 @@ export async function signup(formData) {
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
-    redirect(`/signup?message=${encodeURIComponent(error.message)}`)
+    let errorMessage = error.message
+    if (errorMessage === 'User already registered') {
+      errorMessage = 'An account with this email already exists. Please log in.'
+    }
+    redirect(`/signup?message=${encodeURIComponent(errorMessage)}`)
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  // If we require email confirmation, they aren't logged in yet
+  redirect('/login?message=Account created! Please check your inbox to confirm your email.')
 }

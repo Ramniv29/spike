@@ -15,7 +15,11 @@ export async function login(formData) {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    redirect(`/login?message=${encodeURIComponent(error.message)}`)
+    let errorMessage = error.message
+    if (errorMessage === 'Email not confirmed') {
+      errorMessage = 'Please check your inbox to confirm your email before logging in.'
+    }
+    redirect(`/login?message=${encodeURIComponent(errorMessage)}`)
   }
 
   revalidatePath('/', 'layout')
