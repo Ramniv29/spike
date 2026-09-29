@@ -92,12 +92,15 @@ export function AddTaskModal() {
           </div>
           
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Description (Optional)</label>
+            <div className="flex justify-between items-end">
+              <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Case File (Notes & Evidence)</label>
+              <span className="text-[10px] text-neutral-500 font-sans italic">To attach an image, type: [img](image-url-here)</span>
+            </div>
             <textarea 
               name="description"
-              placeholder="Add more details..."
-              rows={2}
-              className="bg-white border-2 border-neutral-300 rounded p-3 outline-none focus:border-black font-sans text-sm font-medium text-black resize-none transition-colors placeholder:text-neutral-400"
+              placeholder="Add your notes... \n\n[img](https://imgur.com/example.jpg)"
+              rows={4}
+              className="bg-white border-2 border-neutral-300 rounded p-3 outline-none focus:border-black font-sans text-sm font-medium text-black resize-y transition-colors placeholder:text-neutral-400"
             />
           </div>
           

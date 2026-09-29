@@ -152,9 +152,37 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
       {expanded && !isSelectionMode && (
         <div className="px-14 pb-5 bg-neutral-200/80 border-t border-black/10">
           {optimisticTask.description && (
-            <p className="py-4 text-sm text-neutral-800 font-sans border-b border-black/10 mb-3 italic">
-              {optimisticTask.description}
-            </p>
+            <div className="py-4 text-sm text-neutral-800 font-sans border-b border-black/10 mb-3 space-y-2">
+              {optimisticTask.description.split('\n').map((line, i) => {
+                // Check if line contains an image URL like [img](url)
+                const imgMatch = line.match(/\[img\]\((.*?)\)/i)
+                if (imgMatch) {
+                  return (
+                    <div key={i} className="my-2 border-2 border-black/20 p-1 bg-white/50 w-fit">
+                      <img src={imgMatch[1]} alt="Evidence" className="max-h-64 object-contain" />
+                    </div>
+                  )
+                }
+                
+                // Regular links like [text](url)
+                const linkParts = line.split(/(\[.*?\]\(.*?\))/g)
+                if (linkParts.length > 1) {
+                  return (
+                    <p key={i} className="leading-relaxed">
+                      {linkParts.map((part, j) => {
+                        const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/)
+                        if (linkMatch) {
+                          return <a key={j} href={linkMatch[2]} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline font-bold">{linkMatch[1]}</a>
+                        }
+                        return <span key={j}>{part}</span>
+                      })}
+                    </p>
+                  )
+                }
+
+                return <p key={i} className="leading-relaxed italic">{line}</p>
+              })}
+            </div>
           )}
 
           <div className="flex flex-col gap-3 mt-3">

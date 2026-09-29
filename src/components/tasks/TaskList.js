@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TaskItem } from './TaskItem'
 import { deleteTasks } from '@/app/dashboard/actions'
-import { Trash2, CheckSquare, Search, Filter } from 'lucide-react'
+import { Trash2, CheckSquare, Search, GripVertical } from 'lucide-react'
 
 export function TaskList({ initialTasks }) {
   const [isSelectionMode, setIsSelectionMode] = useState(false)
@@ -11,6 +11,26 @@ export function TaskList({ initialTasks }) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState('all') // 'all', 'pending', 'urgent', 'completed'
+  const [orderedTasks, setOrderedTasks] = useState(initialTasks)
+  const [draggedId, setDraggedId] = useState(null)
+
+  useEffect(() => {
+    // Re-sync if initialTasks changes from DB
+    const savedOrder = JSON.parse(localStorage.getItem('strike_task_order') || '[]')
+    if (savedOrder.length > 0) {
+      const newOrder = [...initialTasks].sort((a, b) => {
+        const indexA = savedOrder.indexOf(a.id)
+        const indexB = savedOrder.indexOf(b.id)
+        if (indexA === -1 && indexB === -1) return 0
+        if (indexA === -1) return 1 // New items go to bottom
+        if (indexB === -1) return -1
+        return indexA - indexB
+      })
+      setOrderedTasks(newOrder)
+    } else {
+      setOrderedTasks(initialTasks)
+    }
+  }, [initialTasks])
 
   if (!initialTasks || initialTasks.length === 0) {
     return (
@@ -42,7 +62,41 @@ export function TaskList({ initialTasks }) {
     }
   }
 
-  const filteredTasks = initialTasks.filter(task => {
+  const handleDragStart = (e, id) => {
+    setDraggedId(id)
+    e.dataTransfer.effectAllowed = 'move'
+    // Small delay to allow the drag image to generate before adding opacity
+    setTimeout(() => {
+      e.target.classList.add('opacity-50')
+    }, 0)
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (e, targetId) => {
+    e.preventDefault()
+    if (draggedId === targetId) return
+
+    const newOrder = [...orderedTasks]
+    const draggedIndex = newOrder.findIndex(t => t.id === draggedId)
+    const targetIndex = newOrder.findIndex(t => t.id === targetId)
+
+    const [draggedItem] = newOrder.splice(draggedIndex, 1)
+    newOrder.splice(targetIndex, 0, draggedItem)
+
+    setOrderedTasks(newOrder)
+    localStorage.setItem('strike_task_order', JSON.stringify(newOrder.map(t => t.id)))
+  }
+
+  const handleDragEnd = (e) => {
+    setDraggedId(null)
+    e.target.classList.remove('opacity-50')
+  }
+
+  const filteredTasks = orderedTasks.filter(task => {
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()))
     
@@ -123,13 +177,22 @@ export function TaskList({ initialTasks }) {
         </div>
       ) : (
         filteredTasks.map(task => (
-          <TaskItem 
-            key={task.id} 
-            task={task} 
-          isSelectionMode={isSelectionMode}
-          isSelected={selectedTaskIds.has(task.id)}
-          onToggleSelect={() => handleToggleSelect(task.id)}
-        />
+          <div
+            key={task.id}
+            draggable={!isSelectionMode && filter === 'all'}
+            onDragStart={(e) => handleDragStart(e, task.id)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, task.id)}
+            onDragEnd={handleDragEnd}
+            className={`${draggedId === task.id ? 'opacity-50 scale-95' : 'opacity-100 scale-100'} transition-transform duration-200 cursor-grab active:cursor-grabbing`}
+          >
+            <TaskItem 
+              task={task} 
+              isSelectionMode={isSelectionMode}
+              isSelected={selectedTaskIds.has(task.id)}
+              onToggleSelect={() => handleToggleSelect(task.id)}
+            />
+          </div>
         ))
       )}
     </div>
