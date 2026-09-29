@@ -58,6 +58,39 @@ export async function addTask(formData) {
   return { success: true }
 }
 
+export async function updateTask(id, formData) {
+  const supabase = await createClient()
+  
+  const deadlineStr = formData.get('deadline')
+  const type = formData.get('type') // optional if we keep it
+  let colorTag = formData.get('color_tag') || 'default'
+  
+  // Recalculate color tag if they pass deadline, assuming we only do this if colorTag isn't explicitly set to 'urgent' or something manually
+  if (deadlineStr && type !== 'event' && (!colorTag || colorTag === 'default')) {
+    const deadline = new Date(deadlineStr)
+    const now = new Date()
+    const diffHours = (deadline - now) / (1000 * 60 * 60)
+    
+    if (diffHours < 24) colorTag = 'urgent'
+    else if (diffHours < 72) colorTag = 'pending'
+  }
+
+  const updates = {
+    title: formData.get('title'),
+    description: formData.get('description'),
+    category: formData.get('category'),
+    deadline: deadlineStr ? new Date(deadlineStr).toISOString() : null,
+    color_tag: colorTag,
+  }
+
+  const { error } = await supabase.from('tasks').update(updates).eq('id', id)
+  
+  if (error) return { error: error.message }
+  
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 export async function toggleTask(id, currentStatus) {
   const supabase = await createClient()
   const { error } = await supabase

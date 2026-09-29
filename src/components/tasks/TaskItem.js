@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useOptimistic, useTransition } from 'react'
-import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask, generateSubtasksAI } from '@/app/dashboard/actions'
-import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target, Sparkles, Loader2 } from 'lucide-react'
+import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask, generateSubtasksAI, updateTask } from '@/app/dashboard/actions'
+import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target, Sparkles, Loader2, Edit2 } from 'lucide-react'
 import { FocusMode } from './FocusMode'
 import { playStrikeSound } from '@/lib/sound'
 
@@ -17,6 +17,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
   const [addingSubtask, setAddingSubtask] = useState(false)
   const [isFocusing, setIsFocusing] = useState(false)
   const [isGeneratingAI, setIsGeneratingAI] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const [optimisticTask, setOptimisticTask] = useOptimistic(
@@ -54,6 +55,23 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
     }
   }
 
+  const handleEditSubmit = async (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    startTransition(async () => {
+      // Optimistic update could go here if we expand useOptimistic
+      setIsEditing(false)
+      await updateTask(task.id, formData)
+    })
+  }
+
+  const handleGenerateAI = async () => {
+    setIsGeneratingAI(true)
+    await generateSubtasksAI(task.id, task.title)
+    setIsGeneratingAI(false)
+    setExpanded(true)
+  }
+
   const handleAddSubtask = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
@@ -85,6 +103,57 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
   }
 
   const colorClass = COLOR_MAP[optimisticTask.color_tag] || COLOR_MAP.default
+
+  if (isEditing) {
+    return (
+      <div className={`bg-neutral-100/95 backdrop-blur-md border-2 border-black rounded p-4 mb-4 shadow-[4px_4px_0_rgba(255,255,255,0.2)]`}>
+        <form onSubmit={handleEditSubmit} className="flex flex-col gap-3">
+          <input 
+            type="text" 
+            name="title" 
+            defaultValue={task.title}
+            className="w-full bg-transparent border-b-2 border-black text-xl font-bold font-sans py-1 outline-none focus:border-blue-600"
+            required
+          />
+          <textarea 
+            name="description" 
+            defaultValue={task.description}
+            className="w-full bg-black/5 border-2 border-black/10 rounded p-2 text-sm font-sans min-h-[80px] outline-none focus:border-black"
+            placeholder="Description..."
+          />
+          <div className="flex flex-wrap gap-4 items-center">
+            <input 
+              type="date" 
+              name="deadline" 
+              defaultValue={task.deadline ? task.deadline.split('T')[0] : ''}
+              className="bg-transparent border-b-2 border-black font-sans font-medium text-sm p-1 outline-none"
+            />
+            <input 
+              type="text" 
+              name="category" 
+              defaultValue={task.category}
+              placeholder="Category"
+              className="bg-transparent border-b-2 border-black font-sans font-medium text-sm p-1 outline-none"
+            />
+            <select name="color_tag" defaultValue={task.color_tag || 'default'} className="bg-transparent border-b-2 border-black font-sans font-medium text-sm p-1 outline-none">
+              <option value="default">Default</option>
+              <option value="pending">Pending (Blue)</option>
+              <option value="urgent">Urgent (Red)</option>
+              <option value="event">Event</option>
+            </select>
+          </div>
+          <div className="flex gap-2 justify-end mt-2">
+            <button type="button" onClick={() => setIsEditing(false)} className="text-sm font-bold uppercase tracking-wider text-neutral-600 hover:text-black cursor-pointer px-3">
+              Cancel
+            </button>
+            <button type="submit" disabled={isPending} className="bg-black text-white px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-neutral-800 transition-colors cursor-pointer rounded disabled:opacity-50">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    )
+  }
 
   return (
     <div className={`bg-neutral-100/95 backdrop-blur-md border-2 ${isSelected ? 'border-neutral-500 shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)]'} rounded overflow-hidden transition-all duration-300 mb-4`}>
@@ -122,14 +191,21 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
             <>
               <button 
                 onClick={(e) => { e.stopPropagation(); handleGenerateAI() }}
-                className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200 hidden sm:block"
+                className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200"
                 title="AI Task Breakdown"
               >
                 {isGeneratingAI ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
               </button>
               <button 
+                onClick={(e) => { e.stopPropagation(); setIsEditing(true) }}
+                className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200"
+                title="Edit Task"
+              >
+                <Edit2 size={18} />
+              </button>
+              <button 
                 onClick={(e) => { e.stopPropagation(); setIsFocusing(true) }}
-                className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200 hidden sm:block"
+                className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200"
                 title="Focus Mode"
               >
                 <Target size={18} />
