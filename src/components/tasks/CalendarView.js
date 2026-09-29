@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Clock, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clock, Plus, Calendar } from 'lucide-react'
 
 export function CalendarView({ tasks }) {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -116,16 +116,17 @@ export function CalendarView({ tasks }) {
 
               <div className="mt-2 flex flex-col gap-1">
                 {dayTasks.map(task => {
+                  const isEvent = task.color_tag === 'event'
                   const time = new Date(task.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                  const color = task.color_tag === 'urgent' ? 'bg-red-600' : task.color_tag === 'pending' ? 'bg-blue-600' : 'bg-black'
+                  const color = task.color_tag === 'urgent' ? 'bg-red-600' : task.color_tag === 'pending' ? 'bg-blue-600' : isEvent ? 'bg-white border border-black text-black' : 'bg-black text-white'
                   
                   return (
                     <div 
                       key={task.id} 
-                      className={`text-[10px] sm:text-xs font-sans font-bold uppercase tracking-wider text-white px-1.5 py-1 flex items-center gap-1 truncate ${color}`}
+                      className={`text-[10px] sm:text-xs font-sans font-bold uppercase tracking-wider px-1.5 py-1 flex items-center gap-1 truncate ${color}`}
                       title={`${task.title} at ${time}`}
                     >
-                      <Clock size={10} className="shrink-0" />
+                      {isEvent ? <Calendar size={10} className="shrink-0" /> : <Clock size={10} className="shrink-0" />}
                       <span className="truncate">{task.title}</span>
                     </div>
                   )

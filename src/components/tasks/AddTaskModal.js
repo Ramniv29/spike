@@ -7,6 +7,7 @@ import { Plus, X } from 'lucide-react'
 export function AddTaskModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [initialDate, setInitialDate] = useState('')
+  const [taskType, setTaskType] = useState('task')
 
   useEffect(() => {
     const handleOpen = (e) => {
@@ -45,14 +46,35 @@ export function AddTaskModal() {
         <form action={async (formData) => {
           await addTask(formData)
           setIsOpen(false)
+          setTaskType('task')
         }} className="p-6 flex flex-col gap-6">
           
+          <input type="hidden" name="type" value={taskType} />
+
+          {/* Type Toggle */}
+          <div className="flex bg-neutral-200/50 p-1 rounded border-2 border-black/10">
+            <button
+              type="button"
+              onClick={() => setTaskType('task')}
+              className={`flex-1 py-2 text-xs font-sans font-bold uppercase tracking-widest transition-colors ${taskType === 'task' ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)] border-2 border-black' : 'text-neutral-500 hover:text-black'}`}
+            >
+              To-Do
+            </button>
+            <button
+              type="button"
+              onClick={() => setTaskType('event')}
+              className={`flex-1 py-2 text-xs font-sans font-bold uppercase tracking-widest transition-colors ${taskType === 'event' ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)] border-2 border-black' : 'text-neutral-500 hover:text-black'}`}
+            >
+              Event
+            </button>
+          </div>
+
           <div className="flex flex-col gap-1">
             <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Title</label>
             <input 
               name="title"
               required
-              placeholder="What needs to be done?"
+              placeholder={taskType === 'event' ? "What's the event?" : "What needs to be done?"}
               className="bg-transparent border-b-2 border-neutral-400 py-2 outline-none focus:border-black font-sans font-bold text-xl text-black transition-colors placeholder:text-neutral-400"
             />
           </div>

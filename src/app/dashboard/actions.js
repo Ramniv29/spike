@@ -28,9 +28,10 @@ export async function addTask(formData) {
   if (!user) return { error: 'Unauthorized' }
 
   const deadlineStr = formData.get('deadline')
-  let colorTag = 'default'
+  const type = formData.get('type')
+  let colorTag = type === 'event' ? 'event' : 'default'
   
-  if (deadlineStr) {
+  if (deadlineStr && type !== 'event') {
     const deadline = new Date(deadlineStr)
     const now = new Date()
     const diffHours = (deadline - now) / (1000 * 60 * 60)
