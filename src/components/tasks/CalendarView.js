@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Clock, Plus, Calendar } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clock, Plus, Calendar, X } from 'lucide-react'
+import { TaskItem } from './TaskItem'
 
 export function CalendarView({ tasks }) {
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [selectedDayInfo, setSelectedDayInfo] = useState(null)
 
   const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate()
   const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay()
@@ -85,7 +87,7 @@ export function CalendarView({ tasks }) {
           return (
             <div
               key={day}
-              onClick={() => openAddTaskForDate(day)}
+              onClick={() => setSelectedDayInfo({ day, tasks: dayTasks })}
               className={`min-h-[44px] sm:min-h-[100px] p-1 sm:p-2 border-2 transition-all cursor-pointer group hover:-translate-y-0.5 sm:hover:-translate-y-1 ${isToday ? 'border-green-500 bg-green-50/90 shadow-[2px_2px_0_rgba(34,197,94,0.4)] sm:shadow-[4px_4px_0_rgba(34,197,94,0.4)]' : 'border-neutral-300 bg-neutral-50 hover:border-black hover:bg-white hover:shadow-[2px_2px_0_rgba(0,0,0,1)] sm:hover:shadow-[4px_4px_0_rgba(0,0,0,1)]'}`}
             >
               <div className="flex justify-between items-start">
@@ -128,6 +130,54 @@ export function CalendarView({ tasks }) {
           )
         })}
       </div>
+    </div>
+
+      {/* Day Details Modal */}
+      {selectedDayInfo && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedDayInfo(null)}>
+          <div 
+            className="bg-neutral-100 border-4 border-black rounded shadow-[8px_8px_0_rgba(0,0,0,1)] max-w-xl w-full max-h-[80vh] flex flex-col relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setSelectedDayInfo(null)}
+              className="absolute top-4 right-4 text-black hover:text-neutral-500 transition-colors z-10"
+            >
+              <X size={24} strokeWidth={3} />
+            </button>
+            
+            <div className="p-4 sm:p-6 border-b-2 border-black/10">
+              <h3 className="text-2xl font-black font-sans uppercase tracking-widest">
+                {monthNames[month]} {selectedDayInfo.day}, {year}
+              </h3>
+            </div>
+            
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+              {selectedDayInfo.tasks.length === 0 ? (
+                <p className="text-center text-neutral-500 font-sans italic py-10">No tasks on this date.</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {selectedDayInfo.tasks.map(task => (
+                    <TaskItem key={task.id} task={task} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 sm:p-6 border-t-2 border-black/10 bg-white/50">
+              <button 
+                onClick={() => {
+                  setSelectedDayInfo(null)
+                  openAddTaskForDate(selectedDayInfo.day)
+                }}
+                className="w-full flex items-center justify-center gap-2 bg-black text-white font-sans font-bold uppercase tracking-widest text-sm py-3 rounded hover:bg-neutral-800 transition-colors shadow-[4px_4px_0_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-y-1 hover:translate-x-1"
+              >
+                <Plus size={18} strokeWidth={3} /> Add New Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
