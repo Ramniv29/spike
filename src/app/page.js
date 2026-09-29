@@ -291,7 +291,10 @@ export default function Home() {
         {/* ─── FOOTER ─── */}
         <footer className="border-t border-neutral-800 py-8 px-4 sm:px-8">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-neutral-500 font-sans text-xs uppercase tracking-widest">
-            <div className="font-cursive text-2xl text-neutral-400 normal-case tracking-widest">Strike</div>
+            <div className="font-cursive text-2xl text-neutral-400 normal-case tracking-widest flex items-center gap-4">
+              Strike
+              <span className="font-sans text-xs uppercase tracking-widest text-neutral-600 border-l border-neutral-800 pl-4">Done by Shikworks</span>
+            </div>
             <span>Built for the grind. © {new Date().getFullYear()}</span>
             <div className="flex gap-6">
               <Link href="/login" className="hover:text-white transition-colors">Login</Link>
