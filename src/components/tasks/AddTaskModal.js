@@ -18,8 +18,19 @@ export function AddTaskModal() {
         setInitialDate('')
       }
     }
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+    
     window.addEventListener('openAddTask', handleOpen)
-    return () => window.removeEventListener('openAddTask', handleOpen)
+    window.addEventListener('keydown', handleKeyDown)
+    
+    return () => {
+      window.removeEventListener('openAddTask', handleOpen)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
   
   if (!isOpen) {

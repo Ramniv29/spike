@@ -7,6 +7,7 @@ import { LogOut, LayoutList, Calendar as CalendarIcon } from 'lucide-react'
 import Background from '@/components/3d/Background'
 import Link from 'next/link'
 import { CalendarView } from '@/components/tasks/CalendarView'
+import { KeyboardShortcuts } from '@/components/KeyboardShortcuts'
 
 export default async function DashboardPage({ searchParams }) {
   const supabase = await createClient()
@@ -23,6 +24,7 @@ export default async function DashboardPage({ searchParams }) {
   return (
     <>
       <Background />
+      <KeyboardShortcuts />
       <div className="flex-1 flex flex-col min-h-screen pt-6 sm:pt-12 px-3 sm:px-12 pb-24 max-w-4xl mx-auto w-full z-10">
         <header className="flex justify-between items-end border-b border-neutral-800 pb-3 sm:pb-4 mb-6 sm:mb-8">
           <div>

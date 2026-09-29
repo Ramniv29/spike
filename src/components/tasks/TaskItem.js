@@ -2,7 +2,8 @@
 
 import { useState, useOptimistic, useTransition } from 'react'
 import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask } from '@/app/dashboard/actions'
-import { ChevronDown, ChevronRight, Plus, Check, Trash2 } from 'lucide-react'
+import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target } from 'lucide-react'
+import { FocusMode } from './FocusMode'
 
 const COLOR_MAP = {
   urgent: 'border-red-600 text-red-600',
@@ -13,6 +14,7 @@ const COLOR_MAP = {
 export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) {
   const [expanded, setExpanded] = useState(false)
   const [addingSubtask, setAddingSubtask] = useState(false)
+  const [isFocusing, setIsFocusing] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const [optimisticTask, setOptimisticTask] = useOptimistic(
@@ -113,13 +115,22 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
 
         <div className="flex items-center gap-1">
           {!isSelectionMode && (
-            <button 
-              onClick={(e) => { e.stopPropagation(); handleDeleteTask() }}
-              className="text-neutral-400 hover:text-red-600 transition-colors cursor-pointer p-2 rounded hover:bg-red-50"
-              title="Delete task"
-            >
-              <Trash2 size={18} />
-            </button>
+            <>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setIsFocusing(true) }}
+                className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200 hidden sm:block"
+                title="Focus Mode"
+              >
+                <Target size={18} />
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleDeleteTask() }}
+                className="text-neutral-400 hover:text-red-600 transition-colors cursor-pointer p-2 rounded hover:bg-red-50"
+                title="Delete task"
+              >
+                <Trash2 size={18} />
+              </button>
+            </>
           )}
           <button className="text-black hover:text-neutral-600 cursor-pointer p-2">
             {expanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
@@ -192,6 +203,10 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
             )}
           </div>
         </div>
+      )}
+
+      {isFocusing && (
+        <FocusMode task={optimisticTask} onClose={() => setIsFocusing(false)} />
       )}
     </div>
   )
