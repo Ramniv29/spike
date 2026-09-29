@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useOptimistic, useTransition } from 'react'
 import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask } from '@/app/dashboard/actions'
 import { ChevronDown, ChevronRight, Plus, Check, Trash2 } from 'lucide-react'
 
@@ -13,9 +13,34 @@ const COLOR_MAP = {
 export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) {
   const [expanded, setExpanded] = useState(false)
   const [addingSubtask, setAddingSubtask] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
-  const handleToggle = async () => {
-    await toggleTask(task.id, task.is_completed)
+  const [optimisticTask, setOptimisticTask] = useOptimistic(
+    task,
+    (state, newCompletedStatus) => ({ ...state, is_completed: newCompletedStatus })
+  )
+
+  const [optimisticSubtasks, setOptimisticSubtasks] = useOptimistic(
+    task.subtasks || [],
+    (state, { action, payload }) => {
+      if (action === 'toggle') {
+        return state.map(st => st.id === payload.id ? { ...st, is_completed: payload.is_completed } : st)
+      }
+      if (action === 'delete') {
+        return state.filter(st => st.id !== payload.id)
+      }
+      if (action === 'add') {
+        return [...state, payload] // optimistic add doesn't have real ID, but it gives immediate feedback
+      }
+      return state
+    }
+  )
+
+  const handleToggle = () => {
+    startTransition(async () => {
+      setOptimisticTask(!optimisticTask.is_completed)
+      await toggleTask(task.id, optimisticTask.is_completed)
+    })
   }
 
   const handleDeleteTask = async () => {
@@ -27,27 +52,38 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
   const handleAddSubtask = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
-    await addSubtask(formData)
-    e.target.reset()
-    setAddingSubtask(false)
+    
+    startTransition(async () => {
+      const title = formData.get('title')
+      const colorTag = formData.get('color_tag')
+      setOptimisticSubtasks({ action: 'add', payload: { id: Math.random(), title, is_completed: false, color_tag: colorTag } })
+      setAddingSubtask(false)
+      await addSubtask(formData)
+    })
   }
 
-  const handleToggleSubtask = async (subtask) => {
-    await toggleSubtask(subtask.id, subtask.is_completed)
+  const handleToggleSubtask = (subtask) => {
+    startTransition(async () => {
+      setOptimisticSubtasks({ action: 'toggle', payload: { id: subtask.id, is_completed: !subtask.is_completed } })
+      await toggleSubtask(subtask.id, subtask.is_completed)
+    })
   }
 
-  const handleDeleteSubtask = async (subtask) => {
+  const handleDeleteSubtask = (subtask) => {
     if (confirm('Are you sure you want to delete this subtask?')) {
-      await deleteSubtask(subtask.id)
+      startTransition(async () => {
+        setOptimisticSubtasks({ action: 'delete', payload: { id: subtask.id } })
+        await deleteSubtask(subtask.id)
+      })
     }
   }
 
-  const colorClass = COLOR_MAP[task.color_tag] || COLOR_MAP.default
+  const colorClass = COLOR_MAP[optimisticTask.color_tag] || COLOR_MAP.default
 
   return (
     <div className={`bg-neutral-100/95 backdrop-blur-md border-2 ${isSelected ? 'border-neutral-500 shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)]'} rounded overflow-hidden transition-all duration-300 mb-4`}>
       <div 
-        className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-white transition-colors ${task.is_completed ? 'opacity-60 bg-neutral-300/50' : ''} ${isSelected ? 'bg-neutral-200' : ''}`}
+        className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-white transition-colors ${optimisticTask.is_completed ? 'opacity-60 bg-neutral-300/50' : ''} ${isSelected ? 'bg-neutral-200' : ''}`}
         onClick={() => isSelectionMode ? onToggleSelect() : setExpanded(!expanded)}
       >
         {isSelectionMode ? (
@@ -57,20 +93,20 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
         ) : (
           <button 
             onClick={(e) => { e.stopPropagation(); handleToggle() }}
-            className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${task.is_completed ? 'bg-black border-black text-white' : `${colorClass} bg-transparent`}`}
+            className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${optimisticTask.is_completed ? 'bg-black border-black text-white' : `${colorClass} bg-transparent`}`}
           >
-            {task.is_completed && <Check size={16} strokeWidth={3} />}
+            {optimisticTask.is_completed && <Check size={16} strokeWidth={3} />}
           </button>
         )}
 
         <div className="flex-1 min-w-0">
-          <h3 className={`font-sans text-xl font-bold truncate transition-all duration-300 ${task.is_completed ? 'line-through text-neutral-600' : 'text-black'}`}>
-            {task.title}
+          <h3 className={`font-sans text-xl font-bold truncate transition-all duration-300 ${optimisticTask.is_completed ? 'line-through text-neutral-600' : 'text-black'}`}>
+            {optimisticTask.title}
           </h3>
-          {(task.description || task.deadline || task.category) && (
+          {(optimisticTask.description || optimisticTask.deadline || optimisticTask.category) && (
             <div className="flex gap-3 mt-1 text-xs text-neutral-600 font-sans font-medium uppercase tracking-wider">
-              {task.category && <span>{task.category}</span>}
-              {task.deadline && <span>Due: {new Date(task.deadline).toLocaleDateString()}</span>}
+              {optimisticTask.category && <span>{optimisticTask.category}</span>}
+              {optimisticTask.deadline && <span>Due: {new Date(optimisticTask.deadline).toLocaleDateString()}</span>}
             </div>
           )}
         </div>
@@ -93,14 +129,14 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
 
       {expanded && !isSelectionMode && (
         <div className="px-14 pb-5 bg-neutral-200/80 border-t border-black/10">
-          {task.description && (
+          {optimisticTask.description && (
             <p className="py-4 text-sm text-neutral-800 font-sans border-b border-black/10 mb-3 italic">
-              {task.description}
+              {optimisticTask.description}
             </p>
           )}
 
           <div className="flex flex-col gap-3 mt-3">
-            {task.subtasks?.map(subtask => (
+            {optimisticSubtasks.map(subtask => (
               <div key={subtask.id} className={`group flex items-center gap-3 text-sm font-sans font-medium ${subtask.is_completed ? 'opacity-60' : ''}`}>
                 <button 
                   onClick={() => handleToggleSubtask(subtask)}
