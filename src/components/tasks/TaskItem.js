@@ -189,6 +189,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
         <div className="flex items-center gap-1">
           {!isSelectionMode && (
             <>
+              {/* AI breakdown temporarily hidden
               <button 
                 onClick={(e) => { e.stopPropagation(); handleGenerateAI() }}
                 className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200"
@@ -196,6 +197,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
               >
                 {isGeneratingAI ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
               </button>
+              */}
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsEditing(true) }}
                 className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200"
