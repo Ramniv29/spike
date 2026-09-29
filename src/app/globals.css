@@ -65,3 +65,29 @@ body {
   0% { background-position: 0px 0px, 0px 0px; }
   100% { background-position: 500px 1000px, 400px 500px; }
 }
+
+/* Violent Marker Strike Animation */
+.strike-line {
+  position: relative;
+  display: inline-block;
+}
+.strike-line::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+  transform: translateY(-50%) rotate(-1.5deg);
+  animation: strikeScribble 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  z-index: 10;
+  border-radius: 2px;
+}
+
+@keyframes strikeScribble {
+  0% { width: 0; opacity: 0.8; }
+  50% { opacity: 1; transform: translateY(-50%) rotate(1deg); }
+  100% { width: 100%; opacity: 0.9; transform: translateY(-50%) rotate(-1.5deg); }
+}

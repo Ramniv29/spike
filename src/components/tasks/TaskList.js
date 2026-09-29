@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import { TaskItem } from './TaskItem'
 import { deleteTasks } from '@/app/dashboard/actions'
-import { Trash2, CheckSquare } from 'lucide-react'
+import { Trash2, CheckSquare, Search, Filter } from 'lucide-react'
 
 export function TaskList({ initialTasks }) {
   const [isSelectionMode, setIsSelectionMode] = useState(false)
   const [selectedTaskIds, setSelectedTaskIds] = useState(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filter, setFilter] = useState('all') // 'all', 'pending', 'urgent', 'completed'
 
   if (!initialTasks || initialTasks.length === 0) {
     return (
@@ -39,6 +41,20 @@ export function TaskList({ initialTasks }) {
       setIsDeleting(false)
     }
   }
+
+  const filteredTasks = initialTasks.filter(task => {
+    const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    
+    if (!matchesSearch) return false
+
+    if (filter === 'all') return true
+    if (filter === 'completed') return task.is_completed
+    if (filter === 'pending') return !task.is_completed
+    if (filter === 'urgent') return task.color_tag === 'urgent'
+    
+    return true
+  })
 
   return (
     <div className="flex flex-col gap-4">
@@ -76,15 +92,46 @@ export function TaskList({ initialTasks }) {
         )}
       </div>
 
-      {initialTasks.map(task => (
-        <TaskItem 
-          key={task.id} 
-          task={task} 
+      {/* Search & Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+          <input 
+            type="text" 
+            placeholder="Search cases..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-black/40 backdrop-blur-md border-2 border-white/10 text-white placeholder:text-neutral-600 rounded p-2 pl-9 outline-none focus:border-white font-sans text-sm transition-colors"
+          />
+        </div>
+        <div className="flex gap-2 bg-black/40 backdrop-blur-md border-2 border-white/10 p-1 rounded overflow-x-auto no-scrollbar">
+          {['all', 'pending', 'urgent', 'completed'].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-3 py-1 font-sans font-bold uppercase tracking-widest text-[10px] rounded transition-colors whitespace-nowrap ${filter === f ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)]' : 'text-neutral-500 hover:text-white'}`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filteredTasks.length === 0 ? (
+        <div className="text-center py-10 border-2 border-dashed border-white/10 bg-black/20">
+          <p className="text-neutral-500 font-sans italic">No cases match your filters.</p>
+        </div>
+      ) : (
+        filteredTasks.map(task => (
+          <TaskItem 
+            key={task.id} 
+            task={task} 
           isSelectionMode={isSelectionMode}
           isSelected={selectedTaskIds.has(task.id)}
           onToggleSelect={() => handleToggleSelect(task.id)}
         />
-      ))}
+        ))
+      )}
     </div>
   )
 }

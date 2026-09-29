@@ -4,6 +4,7 @@ import { useState, useOptimistic, useTransition } from 'react'
 import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask, generateSubtasksAI } from '@/app/dashboard/actions'
 import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target, Sparkles, Loader2 } from 'lucide-react'
 import { FocusMode } from './FocusMode'
+import { playStrikeSound } from '@/lib/sound'
 
 const COLOR_MAP = {
   urgent: 'border-red-600 text-red-600',
@@ -40,6 +41,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
   )
 
   const handleToggle = () => {
+    if (!optimisticTask.is_completed) playStrikeSound()
     startTransition(async () => {
       setOptimisticTask(!optimisticTask.is_completed)
       await toggleTask(task.id, optimisticTask.is_completed)
@@ -66,6 +68,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
   }
 
   const handleToggleSubtask = (subtask) => {
+    if (!subtask.is_completed) playStrikeSound()
     startTransition(async () => {
       setOptimisticSubtasks({ action: 'toggle', payload: { id: subtask.id, is_completed: !subtask.is_completed } })
       await toggleSubtask(subtask.id, subtask.is_completed)
@@ -103,7 +106,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
         )}
 
         <div className="flex-1 min-w-0">
-          <h3 className={`font-sans text-xl font-bold truncate transition-all duration-300 ${optimisticTask.is_completed ? 'line-through text-neutral-600' : 'text-black'}`}>
+          <h3 className={`font-sans text-xl font-bold truncate transition-all duration-300 ${optimisticTask.is_completed ? 'strike-line text-neutral-500' : 'text-black'}`}>
             {optimisticTask.title}
           </h3>
           {(optimisticTask.description || optimisticTask.deadline || optimisticTask.category) && (
@@ -163,7 +166,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
                 >
                   {subtask.is_completed && <Check size={14} strokeWidth={3} />}
                 </button>
-                <span className={`transition-all duration-300 ${subtask.is_completed ? 'line-through text-neutral-600' : 'text-black'}`}>
+                <span className={`transition-all duration-300 ${subtask.is_completed ? 'strike-line text-neutral-500' : 'text-black'}`}>
                   {subtask.title}
                 </span>
                 {subtask.color_tag && (
