@@ -112,6 +112,19 @@ export async function deleteTask(id) {
   return { success: true }
 }
 
+export async function deleteTasks(ids) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('tasks')
+    .delete()
+    .in('id', ids)
+    
+  if (error) return { error: error.message }
+  
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 export async function deleteSubtask(id) {
   const supabase = await createClient()
   const { error } = await supabase

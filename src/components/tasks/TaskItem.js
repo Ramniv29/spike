@@ -10,7 +10,7 @@ const COLOR_MAP = {
   default: 'border-black text-black'
 }
 
-export function TaskItem({ task }) {
+export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) {
   const [expanded, setExpanded] = useState(false)
   const [addingSubtask, setAddingSubtask] = useState(false)
 
@@ -45,17 +45,23 @@ export function TaskItem({ task }) {
   const colorClass = COLOR_MAP[task.color_tag] || COLOR_MAP.default
 
   return (
-    <div className="bg-neutral-100/95 backdrop-blur-md border-2 border-white/50 rounded shadow-[4px_4px_0_rgba(255,255,255,0.2)] overflow-hidden transition-all duration-300 mb-4">
+    <div className={`bg-neutral-100/95 backdrop-blur-md border-2 ${isSelected ? 'border-neutral-500 shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)]'} rounded overflow-hidden transition-all duration-300 mb-4`}>
       <div 
-        className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-white transition-colors ${task.is_completed ? 'opacity-60 bg-neutral-300/50' : ''}`}
-        onClick={() => setExpanded(!expanded)}
+        className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-white transition-colors ${task.is_completed ? 'opacity-60 bg-neutral-300/50' : ''} ${isSelected ? 'bg-neutral-200' : ''}`}
+        onClick={() => isSelectionMode ? onToggleSelect() : setExpanded(!expanded)}
       >
-        <button 
-          onClick={(e) => { e.stopPropagation(); handleToggle() }}
-          className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${task.is_completed ? 'bg-black border-black text-white' : `${colorClass} bg-transparent`}`}
-        >
-          {task.is_completed && <Check size={16} strokeWidth={3} />}
-        </button>
+        {isSelectionMode ? (
+          <div className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-black border-black text-white' : 'border-black bg-transparent'}`}>
+            {isSelected && <Check size={16} strokeWidth={3} />}
+          </div>
+        ) : (
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleToggle() }}
+            className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${task.is_completed ? 'bg-black border-black text-white' : `${colorClass} bg-transparent`}`}
+          >
+            {task.is_completed && <Check size={16} strokeWidth={3} />}
+          </button>
+        )}
 
         <div className="flex-1 min-w-0">
           <h3 className={`font-sans text-xl font-bold truncate transition-all duration-300 ${task.is_completed ? 'line-through text-neutral-600' : 'text-black'}`}>
@@ -70,20 +76,22 @@ export function TaskItem({ task }) {
         </div>
 
         <div className="flex items-center gap-1">
-          <button 
-            onClick={(e) => { e.stopPropagation(); handleDeleteTask() }}
-            className="text-neutral-400 hover:text-red-600 transition-colors cursor-pointer p-2 rounded hover:bg-red-50"
-            title="Delete task"
-          >
-            <Trash2 size={18} />
-          </button>
+          {!isSelectionMode && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); handleDeleteTask() }}
+              className="text-neutral-400 hover:text-red-600 transition-colors cursor-pointer p-2 rounded hover:bg-red-50"
+              title="Delete task"
+            >
+              <Trash2 size={18} />
+            </button>
+          )}
           <button className="text-black hover:text-neutral-600 cursor-pointer p-2">
             {expanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
           </button>
         </div>
       </div>
 
-      {expanded && (
+      {expanded && !isSelectionMode && (
         <div className="px-14 pb-5 bg-neutral-200/80 border-t border-black/10">
           {task.description && (
             <p className="py-4 text-sm text-neutral-800 font-sans border-b border-black/10 mb-3 italic">

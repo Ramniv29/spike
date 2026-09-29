@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Clock } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clock, Plus } from 'lucide-react'
 
 export function CalendarView({ tasks }) {
   const [currentDate, setCurrentDate] = useState(new Date())
