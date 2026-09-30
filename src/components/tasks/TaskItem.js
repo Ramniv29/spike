@@ -2,7 +2,7 @@
 
 import { useState, useOptimistic, useTransition } from 'react'
 import { toggleTask, addSubtask, toggleSubtask, deleteTask, deleteSubtask, generateSubtasksAI, updateTask } from '@/app/dashboard/actions'
-import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target, Sparkles, Loader2, Edit2 } from 'lucide-react'
+import { ChevronDown, ChevronRight, Plus, Check, Trash2, Target, Sparkles, Loader2, Edit2, Calendar } from 'lucide-react'
 import { FocusMode } from './FocusMode'
 import { playStrikeSound } from '@/lib/sound'
 
@@ -170,12 +170,18 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
             {isSelected && <Check size={16} strokeWidth={3} />}
           </div>
         ) : (
-          <button 
-            onClick={(e) => { e.stopPropagation(); handleToggle() }}
-            className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${optimisticTask.is_completed ? 'bg-black border-black text-white' : `${colorClass} bg-transparent`}`}
-          >
-            {optimisticTask.is_completed && <Check size={16} strokeWidth={3} />}
-          </button>
+          optimisticTask.color_tag === 'event' ? (
+            <div className="w-6 h-6 flex items-center justify-center shrink-0 text-black">
+              <Calendar size={20} strokeWidth={2.5} />
+            </div>
+          ) : (
+            <button 
+              onClick={(e) => { e.stopPropagation(); handleToggle() }}
+              className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${optimisticTask.is_completed ? 'bg-black border-black text-white' : `${colorClass} bg-transparent`}`}
+            >
+              {optimisticTask.is_completed && <Check size={16} strokeWidth={3} />}
+            </button>
+          )
         )}
 
         <div className="flex-1 min-w-0">
@@ -185,7 +191,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
           {(optimisticTask.description || optimisticTask.deadline || optimisticTask.category) && (
             <div className="flex gap-3 mt-1 text-xs text-neutral-600 font-sans font-medium uppercase tracking-wider">
               {optimisticTask.category && <span>{optimisticTask.category}</span>}
-              {optimisticTask.deadline && <span>Due: {new Date(optimisticTask.deadline).toLocaleDateString()}</span>}
+              {optimisticTask.deadline && <span>{optimisticTask.color_tag === 'event' ? 'Date' : 'Due'}: {new Date(optimisticTask.deadline).toLocaleDateString()}</span>}
             </div>
           )}
         </div>

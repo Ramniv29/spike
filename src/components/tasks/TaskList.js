@@ -108,6 +108,7 @@ export function TaskList({ initialTasks }) {
     if (filter === 'completed') return task.is_completed
     if (filter === 'pending') return !task.is_completed
     if (filter === 'urgent') return task.color_tag === 'urgent'
+    if (filter === 'event') return task.color_tag === 'event'
     
     return true
   })
@@ -161,7 +162,7 @@ export function TaskList({ initialTasks }) {
           />
         </div>
         <div className="flex gap-2 bg-black/40 backdrop-blur-md border-2 border-white/10 p-1 rounded overflow-x-auto no-scrollbar">
-          {['all', 'pending', 'urgent', 'completed'].map((f) => (
+          {['all', 'pending', 'urgent', 'completed', 'event'].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
