@@ -104,6 +104,8 @@ export function TaskList({ initialTasks }) {
     
     if (!matchesSearch) return false
 
+    if (filter !== 'event' && task.color_tag === 'event') return false
+    
     if (filter === 'all') return true
     if (filter === 'completed') return task.is_completed
     if (filter === 'pending') return !task.is_completed
