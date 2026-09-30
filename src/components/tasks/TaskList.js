@@ -10,7 +10,7 @@ export function TaskList({ initialTasks }) {
   const [selectedTaskIds, setSelectedTaskIds] = useState(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [filter, setFilter] = useState('all') // 'all', 'pending', 'urgent', 'completed'
+  const [filter, setFilter] = useState('pending') // 'pending', 'urgent', 'completed', 'event'
   const [orderedTasks, setOrderedTasks] = useState(initialTasks)
   const [draggedId, setDraggedId] = useState(null)
 
@@ -106,7 +106,6 @@ export function TaskList({ initialTasks }) {
 
     if (filter !== 'event' && task.color_tag === 'event') return false
     
-    if (filter === 'all') return true
     if (filter === 'completed') return task.is_completed
     if (filter === 'pending') return !task.is_completed
     if (filter === 'urgent') return task.color_tag === 'urgent'
@@ -164,7 +163,7 @@ export function TaskList({ initialTasks }) {
           />
         </div>
         <div className="flex gap-2 bg-black/40 backdrop-blur-md border-2 border-white/10 p-1 rounded overflow-x-auto no-scrollbar">
-          {['all', 'pending', 'urgent', 'completed', 'event'].map((f) => (
+          {['pending', 'urgent', 'completed', 'event'].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
@@ -184,7 +183,7 @@ export function TaskList({ initialTasks }) {
         filteredTasks.map(task => (
           <div
             key={task.id}
-            draggable={!isSelectionMode && filter === 'all'}
+            draggable={!isSelectionMode && filter === 'pending'}
             onDragStart={(e) => handleDragStart(e, task.id)}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, task.id)}
