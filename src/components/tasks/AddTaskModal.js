@@ -116,7 +116,7 @@ export function AddTaskModal() {
             </div>
             
             <div className="flex flex-col gap-1 flex-1">
-              <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Deadline</label>
+              <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">{taskType === 'event' ? 'Date & Time' : 'Deadline'}</label>
               <input 
                 type="datetime-local"
                 name="deadline"
