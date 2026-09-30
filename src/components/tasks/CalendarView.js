@@ -45,7 +45,8 @@ export function CalendarView({ tasks }) {
   })
 
   return (
-    <div className="bg-neutral-100/95 backdrop-blur-md border-4 border-white/50 rounded p-3 sm:p-6 shadow-[4px_4px_0_rgba(255,255,255,0.2)] sm:shadow-[10px_10px_0_rgba(255,255,255,0.2)]">
+    <>
+      <div className="bg-neutral-100/95 backdrop-blur-md border-4 border-white/50 rounded p-3 sm:p-6 shadow-[4px_4px_0_rgba(255,255,255,0.2)] sm:shadow-[10px_10px_0_rgba(255,255,255,0.2)]">
       
       {/* Calendar Header */}
       <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -178,6 +179,6 @@ export function CalendarView({ tasks }) {
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
