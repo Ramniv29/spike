@@ -23,6 +23,13 @@ export default async function DashboardPage({ searchParams }) {
 
   const tasks = await getTasks()
 
+  const pendingCount = tasks.filter(t => !t.is_completed && t.color_tag !== 'event' && t.category !== '_note').length
+  const urgentCount = tasks.filter(t => !t.is_completed && t.color_tag === 'urgent' && t.category !== '_note').length
+  const eventCount = tasks.filter(t => t.color_tag === 'event' && t.category !== '_note').length
+  const completedCount = tasks.filter(t => t.is_completed && t.category !== '_note').length
+  const totalMissions = pendingCount + completedCount
+  const completionRate = totalMissions > 0 ? Math.round((completedCount / totalMissions) * 100) : (tasks.length === 0 ? 100 : 0)
+
   return (
     <>
       <Background />
@@ -45,6 +52,26 @@ export default async function DashboardPage({ searchParams }) {
             </form>
           </div>
         </header>
+
+        {/* At-a-Glance Mission HUD */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 mb-5 sm:mb-6">
+          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+            <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Active Cases</span>
+            <span className="font-sans font-black text-xl sm:text-2xl text-white">{pendingCount}</span>
+          </div>
+          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+            <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Urgent Threats</span>
+            <span className={`font-sans font-black text-xl sm:text-2xl ${urgentCount > 0 ? 'text-red-500 font-bold' : 'text-neutral-300'}`}>{urgentCount}</span>
+          </div>
+          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+            <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Events Logged</span>
+            <span className="font-sans font-black text-xl sm:text-2xl text-neutral-200">{eventCount}</span>
+          </div>
+          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+            <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Clear Desk Rate</span>
+            <span className="font-sans font-black text-xl sm:text-2xl text-neutral-200">{completionRate}%</span>
+          </div>
+        </div>
 
         <main className="flex-1">
           {/* View Toggle */}

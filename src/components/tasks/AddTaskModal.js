@@ -7,6 +7,8 @@ import { Plus, X, AlertCircle, Loader2 } from 'lucide-react'
 export function AddTaskModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [initialDate, setInitialDate] = useState('')
+  const [initialTitle, setInitialTitle] = useState('')
+  const [initialCategory, setInitialCategory] = useState('')
   const [taskType, setTaskType] = useState('task')
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -24,6 +26,16 @@ export function AddTaskModal() {
         setInitialDate(e.detail.date)
       } else {
         setInitialDate('')
+      }
+      if (e.detail?.title) {
+        setInitialTitle(e.detail.title)
+      } else {
+        setInitialTitle('')
+      }
+      if (e.detail?.category) {
+        setInitialCategory(e.detail.category)
+      } else {
+        setInitialCategory('')
       }
     }
     const handleKeyDown = (e) => {
@@ -48,6 +60,8 @@ export function AddTaskModal() {
         onClick={() => {
           setErrorMessage('')
           setInitialDate('')
+          setInitialTitle('')
+          setInitialCategory('')
           setTaskType('task')
           setIsOpen(true)
         }}
@@ -78,7 +92,7 @@ export function AddTaskModal() {
         </div>
         
         <form 
-          key={`${initialDate}-${taskType}`}
+          key={`${initialDate}-${taskType}-${initialTitle}-${initialCategory}`}
           action={async (formData) => {
             setIsSubmitting(true)
             setErrorMessage('')
@@ -91,6 +105,8 @@ export function AddTaskModal() {
             setIsOpen(false)
             setTaskType('task')
             setInitialDate('')
+            setInitialTitle('')
+            setInitialCategory('')
           }} 
           className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6"
         >
@@ -133,6 +149,7 @@ export function AddTaskModal() {
             <input 
               name="title"
               required
+              defaultValue={initialTitle}
               placeholder={taskType === 'event' ? "What's the event?" : "What needs to be done?"}
               className="bg-transparent border-b-2 border-neutral-400 py-2 outline-none focus:border-black font-sans font-bold text-lg sm:text-xl text-black transition-colors placeholder:text-neutral-400"
             />
@@ -157,6 +174,7 @@ export function AddTaskModal() {
               <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Category</label>
               <input 
                 name="category"
+                defaultValue={initialCategory}
                 placeholder="e.g. Work, Personal"
                 className="bg-white border-2 border-neutral-300 rounded p-2 outline-none focus:border-black font-sans text-sm font-medium text-black transition-colors placeholder:text-neutral-400"
               />

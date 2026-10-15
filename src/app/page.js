@@ -5,7 +5,7 @@ import { Mail } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Background from '@/components/3d/Background'
-import { CheckSquare, Calendar, Zap, Target, Shield, ArrowDown, ChevronRight } from 'lucide-react'
+import { CheckSquare, Calendar, Zap, Target, Shield, ArrowDown, ChevronRight, FileText } from 'lucide-react'
 
 function useInView(threshold = 0.2) {
   const ref = useRef(null)
@@ -73,6 +73,129 @@ const useCases = [
   { emoji: '🎨', title: 'Creatives', desc: 'Pin ideas, track commissions, and schedule creative sessions without losing momentum.' },
 ]
 
+function HeroBentoGrid() {
+  return (
+    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
+      {/* ─── CARD 1: TASK ENGINE ─── */}
+      <div className="bg-neutral-900/80 backdrop-blur-md border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-mono text-[10px] tracking-widest uppercase text-neutral-400 font-bold">
+              01 // TASK ENGINE
+            </span>
+            <CheckSquare size={20} className="text-white group-hover:scale-110 transition-transform" />
+          </div>
+
+          <h3 className="font-sans font-black text-xl uppercase tracking-wide text-white mb-2">
+            Tactical Case Board
+          </h3>
+          <p className="font-sans text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6">
+            Pin missions with deadlines, break them down with subtasks, and auto-flag urgent threats.
+          </p>
+        </div>
+
+        {/* Visual Preview Snapshot */}
+        <div className="space-y-2.5 pt-4 border-t border-neutral-800/80">
+          <div className="p-3 bg-neutral-950/90 border border-red-900/60 rounded flex items-center justify-between gap-2 shadow-[2px_2px_0_rgba(220,38,38,0.2)]">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-4 h-4 border-2 border-neutral-400 shrink-0"></span>
+              <span className="font-sans text-xs text-white font-bold truncate">Deploy v2.0 Hotfix</span>
+            </div>
+            <span className="px-1.5 py-0.5 bg-red-950/80 border border-red-700 text-red-400 font-mono text-[9px] font-bold uppercase tracking-wider shrink-0 animate-pulse">
+              URGENT
+            </span>
+          </div>
+
+          <div className="p-3 bg-neutral-950/60 border border-neutral-800/80 rounded flex items-center justify-between gap-2 opacity-60">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-4 h-4 bg-white border-2 border-white flex items-center justify-center text-black text-[9px] font-black shrink-0">✓</span>
+              <span className="font-sans text-xs text-neutral-400 line-through truncate">Audit Supabase Keys</span>
+            </div>
+            <span className="px-1.5 py-0.5 border border-emerald-600/60 text-emerald-400 font-mono text-[9px] uppercase tracking-wider shrink-0">
+              SOLVED
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── CARD 2: MULTI-EVENT CALENDAR ─── */}
+      <div className="bg-neutral-900/80 backdrop-blur-md border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-mono text-[10px] tracking-widest uppercase text-neutral-400 font-bold">
+              02 // SMART SCHEDULE
+            </span>
+            <Calendar size={20} className="text-white group-hover:scale-110 transition-transform" />
+          </div>
+
+          <h3 className="font-sans font-black text-xl uppercase tracking-wide text-white mb-2">
+            Multi-Event Calendar
+          </h3>
+          <p className="font-sans text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6">
+            Schedule multiple operations on the exact same date without clashes or overlaps.
+          </p>
+        </div>
+
+        {/* Visual Preview Snapshot */}
+        <div className="pt-4 border-t border-neutral-800/80">
+          <div className="p-3 bg-neutral-950/90 border border-neutral-800 rounded">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-neutral-800/80 text-[10px] font-mono">
+              <span className="text-neutral-400 uppercase font-bold">OCTOBER 15 • OPERATIONS</span>
+              <span className="text-white font-bold bg-neutral-800 px-1.5 py-0.5">2 EVENTS</span>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-2 text-xs font-sans p-1.5 bg-neutral-900/60 border border-neutral-800 rounded">
+                <span className="text-neutral-200 truncate font-semibold">Squad Strategy Briefing</span>
+                <span className="text-[10px] font-mono text-cyan-400 shrink-0">10:00 AM</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 text-xs font-sans p-1.5 bg-neutral-900/60 border border-neutral-800 rounded">
+                <span className="text-neutral-200 truncate font-semibold">Tactical Code Review</span>
+                <span className="text-[10px] font-mono text-cyan-400 shrink-0">02:30 PM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── CARD 3: CLASSIFIED NOTES ─── */}
+      <div className="bg-neutral-900/80 backdrop-blur-md border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-mono text-[10px] tracking-widest uppercase text-neutral-400 font-bold">
+              03 // FIELD NOTES
+            </span>
+            <FileText size={20} className="text-white group-hover:scale-110 transition-transform" />
+          </div>
+
+          <h3 className="font-sans font-black text-xl uppercase tracking-wide text-white mb-2">
+            Classified Notes
+          </h3>
+          <p className="font-sans text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6">
+            Instant private scratchpad to record undercover observations, ideas, and case debriefs.
+          </p>
+        </div>
+
+        {/* Visual Preview Snapshot */}
+        <div className="pt-4 border-t border-neutral-800/80">
+          <div className="p-3 bg-neutral-950/90 border border-neutral-800 rounded font-mono text-xs">
+            <div className="text-[10px] text-neutral-500 uppercase tracking-widest mb-1.5 flex justify-between">
+              <span>MEMO // FIELD LOG</span>
+              <span className="text-emerald-400 font-bold">ENCRYPTED</span>
+            </div>
+            <p className="text-neutral-300 text-xs italic leading-relaxed">
+              "Deployment verified on edge nodes. All checks passed. Ready for live operations."
+            </p>
+            <div className="mt-2.5 pt-1.5 border-t border-neutral-800/60 text-[9px] text-neutral-500 uppercase flex items-center justify-between">
+              <span>Auth: Supabase Encrypted</span>
+              <span className="text-neutral-400">RESTRICTED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   const [scrolled, setScrolled] = useState(false)
 
@@ -104,8 +227,8 @@ export default function Home() {
       <main className="relative z-10">
 
         {/* ─── HERO SECTION ─── */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 pt-24 pb-16 max-w-5xl mx-auto">
-          <div className="text-center mb-8">
+        <section className="flex flex-col items-center justify-center px-4 sm:px-8 pt-24 pb-16 max-w-5xl mx-auto w-full">
+          <div className="text-center mb-10">
             <div className="inline-block bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-1.5 font-sans font-black uppercase text-xs tracking-[0.3em] mb-6 animate-pulse">
               ◈ Your Noir Task Manager
             </div>
@@ -113,10 +236,10 @@ export default function Home() {
               Organize<br/>
               <span className="text-transparent [-webkit-text-stroke:2px_white]">The Chaos.</span>
             </h1>
-            <p className="text-neutral-300 font-sans text-base sm:text-xl max-w-xl mx-auto leading-relaxed mb-10">
+            <p className="text-neutral-300 font-sans text-base sm:text-xl max-w-xl mx-auto leading-relaxed mb-8">
               Strike is a high-contrast, noir-style task manager that helps you pin objectives, track deadlines, and close every case — with style.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
               <Link href="/signup" className="group px-8 py-4 bg-white text-black font-sans font-black tracking-widest uppercase text-sm border-2 border-white hover:bg-neutral-200 transition-all shadow-[6px_6px_0px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2">
                 Open a Case File <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -124,11 +247,32 @@ export default function Home() {
                 Resume Investigation
               </Link>
             </div>
+
+            {/* Feature Highlights Ticker */}
+            <div className="inline-flex flex-wrap justify-center gap-2 sm:gap-4 text-xs font-sans uppercase tracking-widest text-neutral-400">
+              <span className="px-3 py-1 bg-white/5 border border-white/10 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-white rounded-full"></span> Zero Clutter
+              </span>
+              <span className="px-3 py-1 bg-white/5 border border-white/10 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping"></span> Smart Urgency
+              </span>
+              <span className="px-3 py-1 bg-white/5 border border-white/10 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-white rounded-full"></span> Multi-Event Calendar
+              </span>
+              <span className="px-3 py-1 bg-white/5 border border-white/10 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-white rounded-full"></span> 100% Encrypted
+              </span>
+            </div>
+          </div>
+
+          {/* ─── 3-FEATURE BENTO GRID ─── */}
+          <div className="w-full my-8">
+            <HeroBentoGrid />
           </div>
 
           {/* Scroll Hint */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-500 animate-bounce">
-            <span className="font-sans text-xs uppercase tracking-widest">Scroll</span>
+          <div className="flex flex-col items-center gap-2 text-neutral-500 animate-bounce pt-8">
+            <span className="font-sans text-xs uppercase tracking-widest">Explore Intelligence Brief</span>
             <ArrowDown size={16} />
           </div>
         </section>
