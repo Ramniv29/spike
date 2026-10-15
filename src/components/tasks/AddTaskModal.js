@@ -2,16 +2,24 @@
 
 import { useState, useEffect } from 'react'
 import { addTask } from '@/app/dashboard/actions'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, AlertCircle, Loader2 } from 'lucide-react'
 
 export function AddTaskModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [initialDate, setInitialDate] = useState('')
   const [taskType, setTaskType] = useState('task')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     const handleOpen = (e) => {
       setIsOpen(true)
+      setErrorMessage('')
+      if (e.detail?.type) {
+        setTaskType(e.detail.type)
+      } else {
+        setTaskType('task')
+      }
       if (e.detail?.date) {
         setInitialDate(e.detail.date)
       } else {
@@ -21,6 +29,7 @@ export function AddTaskModal() {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setIsOpen(false)
+        setErrorMessage('')
       }
     }
     
@@ -36,7 +45,12 @@ export function AddTaskModal() {
   if (!isOpen) {
     return (
       <button 
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setErrorMessage('')
+          setInitialDate('')
+          setTaskType('task')
+          setIsOpen(true)
+        }}
         className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 w-14 h-14 sm:w-16 sm:h-16 bg-white text-black border-[3px] border-black rounded-full shadow-[6px_6px_0_rgba(255,255,255,0.4)] flex items-center justify-center hover:bg-neutral-200 hover:-translate-y-1 transition-all duration-300 z-50 cursor-pointer"
       >
         <Plus size={28} strokeWidth={3} className="sm:hidden" />
@@ -49,17 +63,37 @@ export function AddTaskModal() {
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="bg-neutral-100 border-4 border-white w-full sm:max-w-md shadow-[10px_10px_0_rgba(255,255,255,0.2)] rounded-t-2xl sm:rounded overflow-hidden animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 sm:fade-in sm:zoom-in-95 duration-200">
         <div className="flex justify-between items-center p-4 sm:p-5 border-b-2 border-black/10 bg-white/50">
-          <h2 className="font-sans font-black text-lg sm:text-xl uppercase tracking-widest text-black">New Strike</h2>
-          <button onClick={() => setIsOpen(false)} className="text-black hover:text-neutral-500 transition-colors cursor-pointer p-1">
+          <h2 className="font-sans font-black text-lg sm:text-xl uppercase tracking-widest text-black">
+            {taskType === 'event' ? 'New Event' : 'New Strike'}
+          </h2>
+          <button 
+            onClick={() => {
+              setIsOpen(false)
+              setErrorMessage('')
+            }} 
+            className="text-black hover:text-neutral-500 transition-colors cursor-pointer p-1"
+          >
             <X size={24} strokeWidth={3} />
           </button>
         </div>
         
-        <form action={async (formData) => {
-          await addTask(formData)
-          setIsOpen(false)
-          setTaskType('task')
-        }} className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6">
+        <form 
+          key={`${initialDate}-${taskType}`}
+          action={async (formData) => {
+            setIsSubmitting(true)
+            setErrorMessage('')
+            const res = await addTask(formData)
+            setIsSubmitting(false)
+            if (res?.error) {
+              setErrorMessage(res.error)
+              return
+            }
+            setIsOpen(false)
+            setTaskType('task')
+            setInitialDate('')
+          }} 
+          className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6"
+        >
           
           <input type="hidden" name="type" value={taskType} />
 
@@ -67,19 +101,32 @@ export function AddTaskModal() {
           <div className="flex bg-neutral-200/50 p-1 rounded border-2 border-black/10">
             <button
               type="button"
-              onClick={() => setTaskType('task')}
+              onClick={() => {
+                setTaskType('task')
+                setErrorMessage('')
+              }}
               className={`flex-1 py-2 text-xs font-sans font-bold uppercase tracking-widest transition-colors ${taskType === 'task' ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)] border-2 border-black' : 'text-neutral-500 hover:text-black'}`}
             >
               To-Do
             </button>
             <button
               type="button"
-              onClick={() => setTaskType('event')}
+              onClick={() => {
+                setTaskType('event')
+                setErrorMessage('')
+              }}
               className={`flex-1 py-2 text-xs font-sans font-bold uppercase tracking-widest transition-colors ${taskType === 'event' ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)] border-2 border-black' : 'text-neutral-500 hover:text-black'}`}
             >
               Event
             </button>
           </div>
+
+          {errorMessage && (
+            <div className="bg-red-50 border-2 border-red-500 text-red-700 p-3 rounded flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+              <AlertCircle size={16} className="shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
 
           <div className="flex flex-col gap-1">
             <label className="text-xs text-neutral-600 font-sans font-bold uppercase tracking-wider">Title</label>
@@ -129,16 +176,27 @@ export function AddTaskModal() {
           <div className="mt-2 flex justify-end gap-4 items-center pb-safe">
             <button 
               type="button" 
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false)
+                setErrorMessage('')
+              }}
               className="text-sm font-sans font-bold uppercase tracking-widest text-neutral-600 hover:text-black transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button 
               type="submit"
-              className="px-6 sm:px-8 py-3 text-sm font-sans font-bold uppercase tracking-widest bg-black text-white rounded border-2 border-black hover:bg-neutral-800 transition-colors shadow-[4px_4px_0_rgba(0,0,0,0.3)] cursor-pointer"
+              disabled={isSubmitting}
+              className="px-6 sm:px-8 py-3 text-sm font-sans font-bold uppercase tracking-widest bg-black text-white rounded border-2 border-black hover:bg-neutral-800 transition-colors shadow-[4px_4px_0_rgba(0,0,0,0.3)] cursor-pointer flex items-center gap-2 disabled:opacity-50"
             >
-              Create
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                'Create'
+              )}
             </button>
           </div>
         </form>

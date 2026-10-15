@@ -59,3 +59,10 @@ CREATE POLICY "Users can delete their own subtasks" ON subtasks
   FOR DELETE USING (
     EXISTS (SELECT 1 FROM tasks WHERE tasks.id = subtasks.task_id AND tasks.user_id = auth.uid())
   );
+
+-- Ensure multiple events/tasks can exist on the same date/deadline without unique constraint conflicts
+ALTER TABLE tasks DROP CONSTRAINT IF EXISTS tasks_deadline_key;
+ALTER TABLE tasks DROP CONSTRAINT IF EXISTS tasks_user_id_deadline_key;
+ALTER TABLE tasks DROP CONSTRAINT IF EXISTS unique_user_deadline;
+ALTER TABLE tasks DROP CONSTRAINT IF EXISTS unique_deadline;
+

@@ -41,18 +41,30 @@ export async function addTask(formData) {
     else if (diffHours < 72) colorTag = 'pending'
   }
 
+  let deadlineISO = null
+  if (deadlineStr) {
+    const d = new Date(deadlineStr)
+    // Add unique millisecond offset (1-999ms) so multiple events or tasks on the exact same date and minute
+    // never conflict with potential database unique constraints on deadline
+    d.setMilliseconds(Math.floor(Math.random() * 900) + 1)
+    deadlineISO = d.toISOString()
+  }
+
   const task = {
     user_id: user.id,
     title: formData.get('title'),
     description: formData.get('description'),
     category: formData.get('category'),
-    deadline: deadlineStr ? new Date(deadlineStr).toISOString() : null,
+    deadline: deadlineISO,
     color_tag: colorTag,
   }
 
   const { error } = await supabase.from('tasks').insert([task])
   
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('addTask error:', error)
+    return { error: error.message }
+  }
   
   revalidatePath('/dashboard')
   return { success: true }
@@ -66,7 +78,7 @@ export async function updateTask(id, formData) {
   let colorTag = formData.get('color_tag') || 'default'
   
   // Recalculate color tag if they pass deadline, assuming we only do this if colorTag isn't explicitly set to 'urgent' or something manually
-  if (deadlineStr && type !== 'event' && (!colorTag || colorTag === 'default')) {
+  if (deadlineStr && type !== 'event' && colorTag !== 'event' && (!colorTag || colorTag === 'default')) {
     const deadline = new Date(deadlineStr)
     const now = new Date()
     const diffHours = (deadline - now) / (1000 * 60 * 60)
@@ -75,17 +87,29 @@ export async function updateTask(id, formData) {
     else if (diffHours < 72) colorTag = 'pending'
   }
 
+  let deadlineISO = null
+  if (deadlineStr) {
+    const d = new Date(deadlineStr)
+    if (d.getMilliseconds() === 0) {
+      d.setMilliseconds(Math.floor(Math.random() * 900) + 1)
+    }
+    deadlineISO = d.toISOString()
+  }
+
   const updates = {
     title: formData.get('title'),
     description: formData.get('description'),
     category: formData.get('category'),
-    deadline: deadlineStr ? new Date(deadlineStr).toISOString() : null,
+    deadline: deadlineISO,
     color_tag: colorTag,
   }
 
   const { error } = await supabase.from('tasks').update(updates).eq('id', id)
   
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updateTask error:', error)
+    return { error: error.message }
+  }
   
   revalidatePath('/dashboard')
   return { success: true }

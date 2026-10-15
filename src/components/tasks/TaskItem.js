@@ -18,6 +18,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
   const [isFocusing, setIsFocusing] = useState(false)
   const [isGeneratingAI, setIsGeneratingAI] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const [editColorTag, setEditColorTag] = useState(task.color_tag || 'default')
   const [isPending, startTransition] = useTransition()
 
   const [optimisticTask, setOptimisticTask] = useOptimistic(
@@ -59,9 +60,11 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
     e.preventDefault()
     const formData = new FormData(e.target)
     startTransition(async () => {
-      // Optimistic update could go here if we expand useOptimistic
       setIsEditing(false)
-      await updateTask(task.id, formData)
+      const res = await updateTask(task.id, formData)
+      if (res?.error) {
+        alert(res.error)
+      }
     })
   }
 
@@ -124,13 +127,23 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
             placeholder="Description..."
           />
           <div className="flex flex-wrap gap-4 items-center">
-            <input 
-              type="date" 
-              name="deadline" 
-              defaultValue={task.deadline ? task.deadline.split('T')[0] : ''}
-              className="bg-transparent border-b-2 border-black text-neutral-900 font-sans font-medium text-sm p-1 outline-none"
-              style={{ color: '#171717', colorScheme: 'light' }}
-            />
+            {editColorTag === 'event' ? (
+              <input 
+                type="datetime-local" 
+                name="deadline" 
+                defaultValue={task.deadline ? new Date(new Date(task.deadline).getTime() - new Date(task.deadline).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                className="bg-transparent border-b-2 border-black text-neutral-900 font-sans font-medium text-sm p-1 outline-none"
+                style={{ color: '#171717', colorScheme: 'light' }}
+              />
+            ) : (
+              <input 
+                type="date" 
+                name="deadline" 
+                defaultValue={task.deadline ? task.deadline.split('T')[0] : ''}
+                className="bg-transparent border-b-2 border-black text-neutral-900 font-sans font-medium text-sm p-1 outline-none"
+                style={{ color: '#171717', colorScheme: 'light' }}
+              />
+            )}
             <input 
               type="text" 
               name="category" 
@@ -139,7 +152,13 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
               className="bg-transparent border-b-2 border-black text-neutral-900 font-sans font-medium text-sm p-1 outline-none placeholder-neutral-500"
               style={{ color: '#171717' }}
             />
-            <select name="color_tag" defaultValue={task.color_tag || 'default'} className="bg-transparent border-b-2 border-black text-neutral-900 font-sans font-medium text-sm p-1 outline-none" style={{ color: '#171717' }}>
+            <select 
+              name="color_tag" 
+              value={editColorTag} 
+              onChange={(e) => setEditColorTag(e.target.value)} 
+              className="bg-transparent border-b-2 border-black text-neutral-900 font-sans font-medium text-sm p-1 outline-none" 
+              style={{ color: '#171717' }}
+            >
               <option value="default">Default</option>
               <option value="pending">Pending (Blue)</option>
               <option value="urgent">Urgent (Red)</option>
@@ -209,7 +228,7 @@ export function TaskItem({ task, isSelectionMode, isSelected, onToggleSelect }) 
               </button>
               */}
               <button 
-                onClick={(e) => { e.stopPropagation(); setIsEditing(true) }}
+                onClick={(e) => { e.stopPropagation(); setEditColorTag(task.color_tag || 'default'); setIsEditing(true); }}
                 className="text-neutral-400 hover:text-black transition-colors cursor-pointer p-2 rounded hover:bg-neutral-200"
                 title="Edit Task"
               >
