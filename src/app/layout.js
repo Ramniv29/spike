@@ -6,11 +6,13 @@ const greatVibes = Great_Vibes({
   weight: "400",
   variable: "--font-great-vibes",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata = {

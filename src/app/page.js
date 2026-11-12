@@ -77,7 +77,7 @@ function HeroBentoGrid() {
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
       {/* ─── CARD 1: TASK ENGINE ─── */}
-      <div className="bg-neutral-900/80 backdrop-blur-md border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
+      <div className="bg-neutral-900 border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
         <div>
           <div className="flex items-center justify-between mb-4">
             <span className="font-mono text-[10px] tracking-widest uppercase text-neutral-400 font-bold">
@@ -119,7 +119,7 @@ function HeroBentoGrid() {
       </div>
 
       {/* ─── CARD 2: MULTI-EVENT CALENDAR ─── */}
-      <div className="bg-neutral-900/80 backdrop-blur-md border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
+      <div className="bg-neutral-900 border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
         <div>
           <div className="flex items-center justify-between mb-4">
             <span className="font-mono text-[10px] tracking-widest uppercase text-neutral-400 font-bold">
@@ -158,7 +158,7 @@ function HeroBentoGrid() {
       </div>
 
       {/* ─── CARD 3: CLASSIFIED NOTES ─── */}
-      <div className="bg-neutral-900/80 backdrop-blur-md border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
+      <div className="bg-neutral-900 border-2 border-neutral-800 hover:border-white/40 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(255,255,255,0.08)] group">
         <div>
           <div className="flex items-center justify-between mb-4">
             <span className="font-mono text-[10px] tracking-widest uppercase text-neutral-400 font-bold">

@@ -47,7 +47,7 @@ export function NotesView({ tasks }) {
   return (
     <div className="flex flex-col md:flex-row gap-4 h-[70vh] text-black">
       {/* Sidebar - Note List */}
-      <div className="w-full md:w-1/3 bg-neutral-100/95 backdrop-blur-md border-2 border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)] rounded overflow-hidden flex flex-col">
+      <div className="w-full md:w-1/3 bg-neutral-100 border-2 border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)] rounded overflow-hidden flex flex-col">
         <div className="p-3 border-b-2 border-black/10 flex justify-between items-center bg-white/50">
           <h3 className="font-sans font-black uppercase tracking-widest text-sm flex items-center gap-2 text-black">
             <FileText size={16} /> My Notes
@@ -77,7 +77,7 @@ export function NotesView({ tasks }) {
       </div>
 
       {/* Main Content - Note Editor/Viewer */}
-      <div className="w-full md:w-2/3 bg-neutral-100/95 backdrop-blur-md border-2 border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)] rounded flex flex-col overflow-hidden">
+      <div className="w-full md:w-2/3 bg-neutral-100 border-2 border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)] rounded flex flex-col overflow-hidden">
         {isCreating ? (
           <form onSubmit={handleCreate} className="flex flex-col h-full">
             <div className="p-4 border-b-2 border-black/10 bg-white/50 flex justify-between items-center">

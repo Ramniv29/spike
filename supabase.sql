@@ -66,3 +66,9 @@ ALTER TABLE tasks DROP CONSTRAINT IF EXISTS tasks_user_id_deadline_key;
 ALTER TABLE tasks DROP CONSTRAINT IF EXISTS unique_user_deadline;
 ALTER TABLE tasks DROP CONSTRAINT IF EXISTS unique_deadline;
 
+-- Performance indexes for ultra-fast task and subtask lookups
+CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id);
+CREATE INDEX IF NOT EXISTS idx_subtasks_task_id ON subtasks(task_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_category ON tasks(category);
+CREATE INDEX IF NOT EXISTS idx_tasks_created_at ON tasks(created_at DESC);
+

@@ -15,13 +15,15 @@ export default async function DashboardPage({ searchParams }) {
   const supabase = await createClient()
   const params = await searchParams;
   const view = params?.view || 'list'
-  const { data: { user }, error } = await supabase.auth.getUser()
+
+  const [{ data: { user } = {}, error }, tasks] = await Promise.all([
+    supabase.auth.getUser(),
+    getTasks()
+  ])
 
   if (error || !user) {
     redirect('/login')
   }
-
-  const tasks = await getTasks()
 
   const pendingCount = tasks.filter(t => !t.is_completed && t.color_tag !== 'event' && t.category !== '_note').length
   const urgentCount = tasks.filter(t => !t.is_completed && t.color_tag === 'urgent' && t.category !== '_note').length
@@ -55,19 +57,19 @@ export default async function DashboardPage({ searchParams }) {
 
         {/* At-a-Glance Mission HUD */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 mb-5 sm:mb-6">
-          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+          <div className="bg-neutral-900 border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
             <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Active Cases</span>
             <span className="font-sans font-black text-xl sm:text-2xl text-white">{pendingCount}</span>
           </div>
-          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+          <div className="bg-neutral-900 border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
             <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Urgent Threats</span>
             <span className={`font-sans font-black text-xl sm:text-2xl ${urgentCount > 0 ? 'text-red-500 font-bold' : 'text-neutral-300'}`}>{urgentCount}</span>
           </div>
-          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+          <div className="bg-neutral-900 border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
             <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Events Logged</span>
             <span className="font-sans font-black text-xl sm:text-2xl text-neutral-200">{eventCount}</span>
           </div>
-          <div className="bg-neutral-900/70 backdrop-blur-md border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
+          <div className="bg-neutral-900 border border-neutral-800/80 rounded-lg p-3 sm:p-3.5 shadow-[2px_2px_0_rgba(255,255,255,0.06)]">
             <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-neutral-400 block mb-1">Clear Desk Rate</span>
             <span className="font-sans font-black text-xl sm:text-2xl text-neutral-200">{completionRate}%</span>
           </div>
@@ -75,7 +77,7 @@ export default async function DashboardPage({ searchParams }) {
 
         <main className="flex-1">
           {/* View Toggle */}
-          <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6 bg-black/40 backdrop-blur-md p-1.5 sm:p-2 rounded w-fit border-2 border-white/10">
+          <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6 bg-neutral-900/90 p-1.5 sm:p-2 rounded w-fit border-2 border-white/10">
             <Link 
               href="/dashboard"
               className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 font-sans font-bold uppercase tracking-widest text-[10px] sm:text-xs transition-colors ${view === 'list' ? 'bg-white text-black shadow-[2px_2px_0_rgba(0,0,0,1)]' : 'text-neutral-400 hover:text-white'}`}

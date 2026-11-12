@@ -172,10 +172,10 @@ export function TaskList({ initialTasks }) {
             placeholder="Search cases..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/40 backdrop-blur-md border-2 border-white/10 text-white placeholder:text-neutral-600 rounded p-2 pl-9 outline-none focus:border-white font-sans text-sm transition-colors"
+            className="w-full bg-neutral-900 border-2 border-white/10 text-white placeholder:text-neutral-600 rounded p-2 pl-9 outline-none focus:border-white font-sans text-sm transition-colors"
           />
         </div>
-        <div className="flex gap-2 bg-black/40 backdrop-blur-md border-2 border-white/10 p-1 rounded overflow-x-auto no-scrollbar">
+        <div className="flex gap-2 bg-neutral-900 border-2 border-white/10 p-1 rounded overflow-x-auto no-scrollbar">
           {['pending', 'urgent', 'completed', 'event'].map((f) => (
             <button
               key={f}
@@ -195,7 +195,7 @@ export function TaskList({ initialTasks }) {
 
       {filteredTasks.length === 0 ? (
         totalCases === 0 ? (
-          <div className="bg-neutral-900/80 backdrop-blur-md border-2 border-white/20 rounded-xl p-6 sm:p-10 shadow-[6px_6px_0_rgba(255,255,255,0.08)] text-center relative overflow-hidden">
+          <div className="bg-neutral-900 border-2 border-white/20 rounded-xl p-6 sm:p-10 shadow-[6px_6px_0_rgba(255,255,255,0.08)] text-center relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
             
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white px-3 py-1 font-sans font-black uppercase text-[10px] tracking-[0.25em] mb-4 shadow-[2px_2px_0_rgba(255,255,255,0.1)]">
