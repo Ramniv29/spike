@@ -45,11 +45,11 @@ export function NotesView({ tasks }) {
   }
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 h-[70vh]">
+    <div className="flex flex-col md:flex-row gap-4 h-[70vh] text-black">
       {/* Sidebar - Note List */}
       <div className="w-full md:w-1/3 bg-neutral-100/95 backdrop-blur-md border-2 border-white/50 shadow-[4px_4px_0_rgba(255,255,255,0.2)] rounded overflow-hidden flex flex-col">
         <div className="p-3 border-b-2 border-black/10 flex justify-between items-center bg-white/50">
-          <h3 className="font-sans font-black uppercase tracking-widest text-sm flex items-center gap-2">
+          <h3 className="font-sans font-black uppercase tracking-widest text-sm flex items-center gap-2 text-black">
             <FileText size={16} /> My Notes
           </h3>
           <button 
@@ -61,7 +61,7 @@ export function NotesView({ tasks }) {
         </div>
         <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-2">
           {notes.length === 0 && !isCreating && (
-            <p className="text-center text-xs text-neutral-500 font-sans italic mt-10">No notes yet.</p>
+            <p className="text-center text-xs text-neutral-600 font-sans italic mt-10">No notes yet.</p>
           )}
           {notes.map(note => (
             <div 
@@ -70,7 +70,7 @@ export function NotesView({ tasks }) {
               className={`p-3 border-2 cursor-pointer transition-all ${selectedNote?.id === note.id ? 'border-black bg-white shadow-[2px_2px_0_rgba(0,0,0,1)]' : 'border-transparent hover:border-black/20 hover:bg-white/50'}`}
             >
               <h4 className="font-sans font-bold text-sm truncate text-black">{note.title || 'Untitled Note'}</h4>
-              <p className="font-sans text-xs text-neutral-500 truncate mt-1">{note.description}</p>
+              <p className="font-sans text-xs text-neutral-600 truncate mt-1">{note.description}</p>
             </div>
           ))}
         </div>
@@ -84,12 +84,12 @@ export function NotesView({ tasks }) {
               <input 
                 name="title" 
                 placeholder="Note Title..." 
-                className="bg-transparent border-none text-xl font-bold font-sans outline-none w-full"
+                className="bg-transparent border-none text-xl font-bold font-sans text-black placeholder:text-neutral-500 outline-none w-full"
                 autoFocus
                 required
               />
               <div className="flex gap-2 shrink-0">
-                <button type="button" onClick={() => setIsCreating(false)} className="p-2 text-neutral-500 hover:text-black">
+                <button type="button" onClick={() => setIsCreating(false)} className="p-2 text-neutral-600 hover:text-black">
                   <X size={20} />
                 </button>
                 <button type="submit" className="p-2 bg-black text-white rounded hover:bg-neutral-800">
@@ -100,7 +100,7 @@ export function NotesView({ tasks }) {
             <textarea 
               name="description" 
               placeholder="Start writing..." 
-              className="flex-1 p-4 bg-transparent border-none font-sans text-sm resize-none outline-none leading-relaxed"
+              className="flex-1 p-4 bg-transparent border-none font-sans text-sm text-black placeholder:text-neutral-500 resize-none outline-none leading-relaxed"
             />
           </form>
         ) : isEditing && selectedNote ? (
@@ -109,11 +109,11 @@ export function NotesView({ tasks }) {
               <input 
                 name="title" 
                 defaultValue={selectedNote.title} 
-                className="bg-transparent border-none text-xl font-bold font-sans outline-none w-full"
+                className="bg-transparent border-none text-xl font-bold font-sans text-black placeholder:text-neutral-500 outline-none w-full"
                 required
               />
               <div className="flex gap-2 shrink-0">
-                <button type="button" onClick={() => setIsEditing(false)} className="p-2 text-neutral-500 hover:text-black">
+                <button type="button" onClick={() => setIsEditing(false)} className="p-2 text-neutral-600 hover:text-black">
                   <X size={20} />
                 </button>
                 <button type="submit" className="p-2 bg-black text-white rounded hover:bg-neutral-800">
@@ -124,7 +124,7 @@ export function NotesView({ tasks }) {
             <textarea 
               name="description" 
               defaultValue={selectedNote.description} 
-              className="flex-1 p-4 bg-transparent border-none font-sans text-sm resize-none outline-none leading-relaxed"
+              className="flex-1 p-4 bg-transparent border-none font-sans text-sm text-black placeholder:text-neutral-500 resize-none outline-none leading-relaxed"
             />
           </form>
         ) : selectedNote ? (
@@ -132,22 +132,22 @@ export function NotesView({ tasks }) {
             <div className="p-4 border-b-2 border-black/10 bg-white/50 flex justify-between items-center">
               <h2 className="text-xl font-bold font-sans text-black">{selectedNote.title}</h2>
               <div className="flex gap-2 shrink-0">
-                <button onClick={() => setIsEditing(true)} className="p-2 text-neutral-500 hover:text-black">
+                <button onClick={() => setIsEditing(true)} className="p-2 text-neutral-600 hover:text-black">
                   <Edit2 size={20} />
                 </button>
-                <button onClick={() => handleDelete(selectedNote.id)} className="p-2 text-neutral-500 hover:text-red-600">
+                <button onClick={() => handleDelete(selectedNote.id)} className="p-2 text-neutral-600 hover:text-red-600">
                   <Trash2 size={20} />
                 </button>
               </div>
             </div>
             <div className="flex-1 p-4 overflow-y-auto">
-              <div className="font-sans text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap">
+              <div className="font-sans text-sm text-black leading-relaxed whitespace-pre-wrap">
                 {selectedNote.description}
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-neutral-400 font-sans italic text-sm">
+          <div className="flex-1 flex items-center justify-center text-neutral-600 font-sans italic text-sm">
             Select a note or create a new one.
           </div>
         )}
